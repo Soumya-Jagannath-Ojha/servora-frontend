@@ -4,7 +4,8 @@ const Root = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate("/login");
+    localStorage.removeItem("accessToken");
+    navigate('/');
   };
 
   return (
@@ -16,12 +17,12 @@ const Root = () => {
             Project Management System
           </h1>
 
-          {/* <button
+          <button
             onClick={handleLogin}
             className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
           >
-            Login
-          </button> */}
+            Logout
+          </button>
         </div>
       </header>
 
