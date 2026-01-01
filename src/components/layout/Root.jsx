@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 const Root = () => {
   const navigate = useNavigate();
 
+  const token = JSON.parse(localStorage.getItem("accessToken"))
+
   const handleLogin = () => {
     localStorage.removeItem("accessToken");
     navigate('/');
@@ -17,12 +19,14 @@ const Root = () => {
             Project Management System
           </h1>
 
-          <button
+          {
+            token? <button
             onClick={handleLogin}
             className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
           >
             Logout
-          </button>
+          </button> :""
+          }
         </div>
       </header>
 
