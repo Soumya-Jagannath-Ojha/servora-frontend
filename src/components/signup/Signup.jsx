@@ -36,8 +36,8 @@ const Signup = () => {
 
       if (res.data.success === true) {
         const accesstoken = res.data.data.accessToken;
-        localStorage.setItem("accessToken",JSON.stringify(accesstoken))
-        navigate("/dashboard")
+        // localStorage.setItem("accessToken",JSON.stringify(accesstoken))
+        navigate("/verify-email/:verificationToken")
         setFormdata({
           email: "",
           password: ""

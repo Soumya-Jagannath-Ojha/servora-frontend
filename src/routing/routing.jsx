@@ -5,6 +5,7 @@ import Signup from "../components/signup/Signup";
 import Dashboard from "../components/dashboard/Dashboard";
 import ProtectedRoute from "../privateRouting/ProtectedRoute";
 import Root from "../components/layout/Root";
+import VerifyEmail from "../components/signup/VerifyEmail";
 
 
 
@@ -24,6 +25,11 @@ export const paths = createBrowserRouter([
             {
                 path: "/signup",
                 element: <Signup/>,
+            },
+            {
+                path: "/verify-email/:verificationToken",
+                element: <VerifyEmail/>
+
             },
             {
                 path: "/dashboard",
