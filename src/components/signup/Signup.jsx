@@ -16,7 +16,7 @@ const Signup = () => {
     setFormdata({ ...formdata, [name]: value })
   }
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
 
@@ -26,11 +26,11 @@ const Signup = () => {
       const res = await axios.post(
         `${apiUrl}/api/v1/auth/register`, // your login endpoint
         {
-          username:formdata.username,
+          username: formdata.username,
           email: formdata.email,
           password: formdata.password
         },
-       
+
       );
       console.log(res.data)
 
@@ -39,6 +39,7 @@ const Signup = () => {
         // localStorage.setItem("accessToken",JSON.stringify(accesstoken))
         navigate(`/verify-email/${emailVerificationToken}`)
         setFormdata({
+          username: "",
           email: "",
           password: ""
         })
@@ -46,10 +47,10 @@ const Signup = () => {
         alert(res.data.message)
       } else {
         alert("Invalid credential")
-        
+
       }
 
-      
+
     } catch (error) {
       console.error(error)
     }
