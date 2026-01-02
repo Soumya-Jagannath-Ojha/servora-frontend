@@ -36,8 +36,9 @@ const Signup = () => {
 
       if (res.data.success === true) {
         const emailVerificationToken = res.data.data.user.emailVerificationToken;
+        const email = formdata.email;
         // localStorage.setItem("accessToken",JSON.stringify(accesstoken))
-        navigate(`/verify-email/${emailVerificationToken}`)
+        navigate(`/check-email/${email}`)
         setFormdata({
           username: "",
           email: "",
@@ -61,7 +62,7 @@ const Signup = () => {
 
 
   return (
-    <div className="container bg-blue-50 w-full h-screen">
+    <div className="container  w-full h-screen">
 
       <div className='mx-auto  w-[30%] h-[90%] flex items-center justify-center'>
 
