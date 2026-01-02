@@ -1,81 +1,94 @@
-import axios from 'axios';
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
-
+import axios from "axios";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-
-
-
   const [formdata, setFormdata] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handlchange = (e) => {
     const { name, value } = e.target;
-    setFormdata({ ...formdata, [name]: value })
-  }
-
+    setFormdata({ ...formdata, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     try {
       const apiUrl = import.meta.env.VITE_BACKEND_URI;
-      // Send login request to backend
-      const res = await axios.post(
-        `${apiUrl}/api/v1/auth/login`, // your login endpoint
-        {
-          email: formdata.email,
-          password: formdata.password
-        },
-       
-      );
-      console.log(res.data)
+      const res = await axios.post(`${apiUrl}/api/v1/auth/login`, {
+        email: formdata.email,
+        password: formdata.password,
+      });
 
       if (res.data.success === true) {
-        const accesstoken = res.data.data.accessToken;
-        localStorage.setItem("accessToken",JSON.stringify(accesstoken))
-        navigate("/dashboard")
-        setFormdata({
-          email: "",
-          password: ""
-        })
-
-        alert(res.data.message)
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(res.data.data.accessToken)
+        );
+        navigate("/dashboard");
+        setFormdata({ email: "", password: "" });
+        alert(res.data.message);
       } else {
-        alert("Invalid credential")
-        
+        alert("Invalid credentials");
       }
-
-      
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
-  }
-
+  };
 
   return (
-    <div className='mx-auto  w-[30%] h-[80%] flex items-center justify-center'>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full sm:w-[90%] md:w-[420px] bg-white text-black rounded-xl shadow-xl p-6 sm:p-8 space-y-4"
+      >
+        <h1 className="text-2xl font-bold text-center">Login</h1>
 
-      <form action="" onSubmit={handleSubmit} className='w-full h-[75%] flex flex-col p-12 items-center gap-4 bg-white text-black rounded-lg shadow-xl'>
-        <h1 className='text-2xl font-bold'>Login</h1>
-        <label htmlFor="" className='text-left w-full'>Email address</label>
-        <input type="text" name="email" id="" placeholder='Enter your email address' className='w-full h-[14%] rounded-xl p-4 border border-gray-200' onChange={handlchange} />
-        <label htmlFor="" className='text-left w-full'>Password</label>
-        <input type="password" name="password" id="" placeholder='Enter your password' className='w-full h-[14%] rounded-xl p-4 border border-gray-200' onChange={handlchange} />
-        <button className='bg-black text-white w-full h-[16%] rounded-xl'>Login</button>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Email address</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
+            onChange={handlchange}
+            required
+          />
+        </div>
 
-        <p>Don't have an account? <Link to="/signup" className='text-blue-700 font-bold underline'>Signup</Link></p>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
+            onChange={handlchange}
+            required
+          />
+        </div>
+
+        <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition">
+          Login
+        </button>
+
+        <p className="text-center text-sm">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-700 font-semibold underline"
+          >
+            Signup
+          </Link>
+        </p>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
