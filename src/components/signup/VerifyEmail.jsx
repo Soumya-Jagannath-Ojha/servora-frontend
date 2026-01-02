@@ -4,6 +4,7 @@ import axios from "axios";
 
 const VerifyEmail = () => {
   const { verificationToken } = useParams();
+  console.log(verificationToken)
   const navigate = useNavigate();
   const [status, setStatus] = useState("verifying");
 

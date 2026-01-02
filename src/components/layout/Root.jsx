@@ -3,9 +3,10 @@ import { Outlet, useNavigate } from "react-router-dom";
 const Root = () => {
   const navigate = useNavigate();
 
-  const token = JSON.parse(localStorage.getItem("accessToken"))
 
-  const handleLogin = () => {
+  const token = JSON.parse(localStorage.getItem("accessToken"))
+  const handleLogout = () => {
+
     localStorage.removeItem("accessToken");
     navigate('/');
   };
@@ -20,12 +21,12 @@ const Root = () => {
           </h1>
 
           {
-            token? <button
-            onClick={handleLogin}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-          >
-            Logout
-          </button> :""
+            token ? <button
+              onClick={handleLogout}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+            >
+              Logout
+            </button> : ""
           }
         </div>
       </header>
