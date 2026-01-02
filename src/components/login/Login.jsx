@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+
 
 const Login = () => {
   const [formdata, setFormdata] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -61,7 +65,7 @@ const Login = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
+        {/* <div className="flex flex-col gap-1">
           <label className="text-sm font-medium">Password</label>
           <input
             type="password"
@@ -71,6 +75,24 @@ const Login = () => {
             onChange={handlchange}
             required
           />
+        </div> */}
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Enter your password"
+            className="w-full rounded-lg px-4 py-3 pr-12 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
+            onChange={handlchange}
+            required
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
 
         <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition">
