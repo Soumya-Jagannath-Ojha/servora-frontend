@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
+
 
 const Signup = () => {
 
@@ -9,6 +11,7 @@ const Signup = () => {
     email: "",
     password: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handlchange = (e) => {
@@ -62,25 +65,93 @@ const Signup = () => {
 
 
   return (
-    <div className="container  w-full h-screen">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fade-in-up">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create an account</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Start your 14-day free trial today</p>
+        </div>
 
-      <div className='mx-auto  w-[30%] h-[90%] flex items-center justify-center'>
+        {/* Signup Card */}
+        <div className="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Full Name</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="John Doe"
+                value={formdata.username}
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                onChange={handlchange}
+                required
+              />
+            </div>
 
-        <form action="" onSubmit={handleSubmit} className='w-full h-[85%] flex flex-col p-12 items-center gap-4 bg-white shadow-xl text-black rounded-lg'>
-          <h1 className='text-2xl font-bold'>Signup</h1>
-          <label htmlFor="" className='text-left w-full'>Username</label>
-          <input type="text" name="username" id="username" placeholder='Enter your username' className='w-full h-[11%] rounded-xl p-4 border border-gray-200' value={formdata.username} onChange={handlchange} />
-          <label htmlFor="" className='text-left w-full'>Email address</label>
-          <input type="text" name="email" id="email" placeholder='Enter your email address' className='w-full h-[11%] rounded-xl p-4 border border-gray-200' value={formdata.email} onChange={handlchange} />
-          <label htmlFor="" className='text-left w-full'>Password</label>
-          <input type="password" name="password" id="password" placeholder='Enter your password' className='w-full h-[11%] rounded-xl p-4 border border-gray-200' value={formdata.password} onChange={handlchange} />
-          <button className='bg-black text-white w-full h-[10%] rounded-xl'>Signup</button>
-          <p>Already have an account? <Link to="/" className='text-blue-700 font-bold underline'>Login</Link> </p>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Email address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="name@company.com"
+                value={formdata.email}
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                onChange={handlchange}
+                required
+              />
+            </div>
 
-        </form>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Password</label>
+              <div className="relative group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  value={formdata.password}
+                  className="w-full rounded-xl px-4 py-3 pr-12 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                  onChange={handlchange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="py-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                By signing up, you agree to our{" "}
+                <Link to="/terms" className="text-blue-600 hover:underline">Terms of Service</Link> and{" "}
+                <Link to="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
+              </p>
+            </div>
+
+            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+              Create account
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold underline-offset-4 hover:underline"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Signup

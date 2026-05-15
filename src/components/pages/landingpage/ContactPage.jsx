@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import PageTransition from '../components/PageTransition.jsx'
+import PageTransition from '../../animation/PageTransition'
 
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false)

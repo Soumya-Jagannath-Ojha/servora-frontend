@@ -4,45 +4,49 @@ import { Link } from 'react-router-dom'
 import PageTransition from "../animation/PageTransition";
 
 const Home = () => {
-    return (
-        // <div className="container bg-blue-50 w-full h-screen">
-        //     {/* <Login /> */}
-        // </div>
+  return (
+    // <div className="container bg-blue-50 w-full h-screen">
+    //     {/* <Login /> */}
+    // </div>
 
-         <PageTransition>
+    <PageTransition>
       {/* Hero section - ChronoTask style */}
       <section className="py-16 sm:py-24 relative">
         <div className="max-w-7xl mx-auto px-4 relative">
+          {/* Background Glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full -z-10 animate-pulse" />
+          
           <div className="max-w-4xl mx-auto text-center">
-          {/* Central 3D icon */}
-          <div className="inline-flex items-center justify-center mb-8 animate-scale-in">
-            <div className="w-20 h-20 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-white/10 shadow-lg flex items-center justify-center gap-1 p-2 rotate-[-2deg] hover:rotate-0 transition-transform">
-              <div className="grid grid-cols-2 gap-1">
-                <div className="w-6 h-6 rounded-md bg-gray-900 dark:bg-white" />
-                <div className="w-6 h-6 rounded-md bg-gray-900 dark:bg-white" />
-                <div className="w-6 h-6 rounded-md bg-blue-400" />
-                <div className="w-6 h-6 rounded-md bg-blue-600" />
+            {/* Central 3D icon */}
+            {/* Central 3D icon */}
+            <div className="inline-flex items-center justify-center mb-8 animate-scale-in">
+              <div className="w-20 h-20 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-white/10 shadow-lg flex items-center justify-center gap-1 p-2 rotate-[-2deg] hover:rotate-0 transition-all duration-300 group backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-1">
+                  <div className="w-6 h-6 rounded-md bg-gray-900 dark:bg-white force-white group-hover:scale-110 transition-transform" />
+                  <div className="w-6 h-6 rounded-md bg-gray-900 dark:bg-white force-white group-hover:scale-110 transition-transform" style={{ transitionDelay: '50ms' }} />
+                  <div className="w-6 h-6 rounded-md bg-blue-400 group-hover:scale-110 transition-transform" style={{ transitionDelay: '100ms' }} />
+                  <div className="w-6 h-6 rounded-md bg-blue-500 group-hover:scale-110 transition-transform" style={{ transitionDelay: '150ms' }} />
+                </div>
               </div>
             </div>
-          </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 animate-slide-up">
-            Think, plan, and track
-          </h1>
-          <p className="text-2xl sm:text-3xl text-gray-500 dark:text-gray-400 font-medium mb-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            all in one place
-          </p>
-          <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.15s' }}>
-            Efficiently manage your workforce and boost productivity.
-          </p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              Think, plan, and track
+            </h1>
+            <p className="text-2xl sm:text-3xl text-gray-500 dark:text-gray-400 font-medium mb-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              all in one place
+            </p>
+            <p className="text-lg text-gray-500 dark:text-gray-500 max-w-xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              Efficiently manage your projects, track milestones, and boost team productivity.
+            </p>
 
-          <Link
-            to="/contact"
-            className="inline-block px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/30 transition-all animate-slide-up"
-            style={{ animationDelay: '0.2s' }}
-          >
-            Get free demo
-          </Link>
+            <Link
+              to="/signup"
+              className="inline-block px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-[0_10px_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_15px_50px_-10px_rgba(37,99,235,0.6)] transition-all animate-fade-in-up transform hover:-translate-y-0.5"
+              style={{ animationDelay: '0.4s' }}
+            >
+              Get free demo
+            </Link>
           </div>
 
           {/* Floating left - Notes card */}
@@ -119,18 +123,21 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Integrations card */}
+          {/* Project Health card */}
           <div className="bg-white dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-200/80 dark:border-white/10 p-6 hover:shadow-xl transition-shadow animate-slide-up" style={{ animationDelay: '0.35s' }}>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">100+ Integrations</h3>
-            <div className="flex items-center justify-center gap-6">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-400 to-yellow-500 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                M
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Project Health</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Design Phase</span>
+                <span className="px-2 py-1 rounded-md bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider">On Track</span>
               </div>
-              <div className="w-14 h-14 rounded-xl bg-teal-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                Slack
+              <div className="flex items-center justify-between p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                <span className="text-sm font-medium text-amber-700 dark:text-amber-400">Development</span>
+                <span className="px-2 py-1 rounded-md bg-amber-500 text-white text-[10px] font-bold uppercase tracking-wider">At Risk</span>
               </div>
-              <div className="w-14 h-14 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-white/10 flex items-center justify-center shadow-md">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">31</span>
+              <div className="flex items-center justify-between p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-400">QA Testing</span>
+                <span className="px-2 py-1 rounded-md bg-blue-500 text-white text-[10px] font-bold uppercase tracking-wider">Review</span>
               </div>
             </div>
           </div>
@@ -142,17 +149,17 @@ const Home = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Everything you need</h2>
-            <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Powerful features designed to simplify HR operations</p>
+            <p className="text-gray-500 dark:text-gray-300 max-w-xl mx-auto">Powerful features designed to simplify project monitoring</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: '📊', title: 'Attendance Tracking', desc: 'Real-time attendance with geolocation and biometric support.' },
-              { icon: '💰', title: 'Payroll Management', desc: 'Automated payroll processing with tax compliance built-in.' },
-              { icon: '📅', title: 'Leave Management', desc: 'Streamlined leave requests with approval workflows.' },
-              { icon: '📈', title: 'Analytics & Reports', desc: 'Actionable insights with customizable dashboards.' },
-              { icon: '🔗', title: 'Integrations', desc: 'Connect with your existing tools and workflows.' },
-              { icon: '🔒', title: 'Enterprise Security', desc: 'SOC 2 compliant with end-to-end encryption.' },
+              { icon: '📊', title: 'Project Monitoring', desc: 'Real-time tracking of project health, milestones, and KPIs.' },
+              { icon: '✅', title: 'Task Management', desc: 'Assign tasks, set priorities, and track progress seamlessly.' },
+              { icon: '📅', title: 'Timeline Planning', desc: 'Visual Gantt charts and deadline tracking for every phase.' },
+              { icon: '📈', title: 'Advanced Analytics', desc: 'Actionable insights into project ROI and team performance.' },
+              { icon: '🔗', title: 'Smart Integrations', desc: 'Connect with your existing project tools and workflows.' },
+              { icon: '🔒', title: 'Secure Data', desc: 'Enterprise-grade security for your sensitive project data.' },
             ].map((feature, i) => (
               <div
                 key={feature.title}
@@ -160,7 +167,7 @@ const Home = () => {
               >
                 <div className="text-2xl mb-3">{feature.icon}</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                <p className="text-gray-500 dark:text-gray-300 text-sm leading-relaxed">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -171,12 +178,12 @@ const Home = () => {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <div className="bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200/80 dark:border-white/10 p-12 shadow-lg">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready to transform your HR?</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-8">
-              Join thousands of companies already using HRMS. Start your free trial today.
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready to transform your projects?</h2>
+            <p className="text-gray-500 dark:text-gray-300 mb-8">
+              Join thousands of teams already using Servora. Start your free trial today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact" className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 transition-all">
+              <Link to="/signup" className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 transition-all">
                 Get started free
               </Link>
               <Link to="/pricing" className="px-8 py-4 rounded-xl border border-gray-300 dark:border-white/20 text-gray-900 dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
@@ -187,7 +194,7 @@ const Home = () => {
         </div>
       </section>
     </PageTransition>
-    )
+  )
 }
 
 export default Home

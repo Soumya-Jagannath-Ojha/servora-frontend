@@ -1,3 +1,150 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply transition-colors duration-300 text-gray-900 bg-[#f8f9fa];
+    background-image: radial-gradient(circle at center, #d1d5db 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+  }
+  .dark body {
+    @apply text-white bg-[#0f0d24];
+    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  /* Force dark backgrounds for cards and buttons in dark mode if Tailwind utilities fail */
+  .dark .bg-white:not(.no-dark-override):not(.force-white), .dark .bg-gray-50, .dark .bg-gray-100, .dark .bg-amber-50 {
+    background-color: rgba(31, 41, 55, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  /* Force white for specific elements that MUST stay white */
+  .dark .force-white {
+    background-color: white !important;
+    color: white !important;
+  }
+  /* Prevent color/background overrides for custom badges */
+  .dark .no-dark-override {
+    color: inherit !important;
+  }
+  /* Ensure text visibility inside dark cards/buttons */
+  .dark h1, .dark h2, .dark h3, .dark span, .dark p, .dark a, .dark button, .dark label, .dark input {
+    color: white !important;
+  }
+  /* Specific override for secondary text to keep it muted but visible */
+  .dark .text-gray-500, .dark .text-gray-400 {
+    color: #9ca3af !important;
+  }
+  /* Fix for placeholders in dark mode */
+  .dark input::placeholder {
+    color: #6b7280 !important;
+  }
+}
+
+
+
+
+
+
+
+
+@layer utilities {
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+  @keyframes fade-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fade-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(var(--tw-rotate, 0deg));
+    }
+    50% {
+      transform: translateY(-20px) rotate(var(--tw-rotate, 0deg));
+    }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-left {
+    animation: fade-in-left 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-right {
+    animation: fade-in-right 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Legacy aliases to keep existing code working while matching new style */
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+}

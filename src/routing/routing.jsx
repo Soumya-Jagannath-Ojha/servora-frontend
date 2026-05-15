@@ -7,6 +7,11 @@ import ProtectedRoute from "../privateRouting/ProtectedRoute";
 import Root from "../components/layout/Root";
 import VerifyEmail from "../components/signup/VerifyEmail";
 import CheckEmail from "../components/signup/CheckEmail";
+import SolutionsPage from "../components/pages/landingpage/SolutionsPage";
+import PricingPage from "../components/pages/landingpage/PricingPage";
+import AboutPage from "../components/pages/landingpage/AboutPage";
+import ContactPage from "../components/pages/landingpage/ContactPage";
+
 
 
 
@@ -27,6 +32,23 @@ export const paths = createBrowserRouter([
                 path: "/signup",
                 element: <Signup/>,
             },
+            {
+                path: "/solutions",
+                element: <SolutionsPage/>,
+            },
+            {
+                path: "/pricing",
+                element: <PricingPage/>,
+            },
+            {
+                path: "/about",
+                element: <AboutPage/>,
+            },
+            {
+                path: "/contact",
+                element: <ContactPage/>,
+            },
+
             {
                 path: "/verify-email/:verificationToken",
                 element: <VerifyEmail/>

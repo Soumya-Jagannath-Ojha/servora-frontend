@@ -46,71 +46,81 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full sm:w-[90%] md:w-[420px] bg-white text-black rounded-xl shadow-xl p-6 sm:p-8 space-y-4"
-      >
-        <h1 className="text-2xl font-bold text-center">Login</h1>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium">Email address</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email address"
-            className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
-            onChange={handlchange}
-            required
-          />
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fade-in-up">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Please enter your details to sign in</p>
         </div>
 
-        {/* <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            className="w-full rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
-            onChange={handlchange}
-            required
-          />
-        </div> */}
-        <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Enter your password"
-            className="w-full rounded-lg px-4 py-3 pr-12 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
-            onChange={handlchange}
-            required
-          />
+        {/* Login Card */}
+        <div className="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Email address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="name@company.com"
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                onChange={handlchange}
+                required
+              />
+            </div>
 
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
-          >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Password</label>
+              <div className="relative group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  className="w-full rounded-xl px-4 py-3 pr-12 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                  onChange={handlchange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between py-1">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="remember" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400">Remember me</label>
+              </div>
+              <Link to="/forgot-password" strokeLinecap="round" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+              Sign in
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold underline-offset-4 hover:underline"
+              >
+                Create an account
+              </Link>
+            </p>
+          </div>
         </div>
-
-        <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition">
-          Login
-        </button>
-
-        <p className="text-center text-sm">
-          Don't have an account?{" "}
-          <Link
-            to="/signup"
-            className="text-blue-700 font-semibold underline"
-          >
-            Signup
-          </Link>
-        </p>
-      </form>
+      </div>
     </div>
   );
+
 };
 
 export default Login;
