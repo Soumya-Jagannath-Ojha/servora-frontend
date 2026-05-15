@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 
 function Root() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -33,6 +34,7 @@ function Root() {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
+      <Toaster position="top-center" reverseOrder={false} />
       {/* Main content container - soft-edged, centered like ChronoTask */}
       <div className="min-h-screen mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between py-6">

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 
 const Signup = () => {
@@ -41,6 +42,7 @@ const Signup = () => {
         const emailVerificationToken = res.data.data.user.emailVerificationToken;
         const email = formdata.email;
         // localStorage.setItem("accessToken",JSON.stringify(accesstoken))
+        toast.success(res.data.message || "Account created successfully!");
         navigate(`/check-email/${email}`)
         setFormdata({
           username: "",
@@ -48,15 +50,15 @@ const Signup = () => {
           password: ""
         })
 
-        alert(res.data.message)
       } else {
-        alert("Invalid credential")
+        toast.error(res.data.message || "Invalid credentials");
 
       }
 
 
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      toast.error(error.response?.data?.message || "Registration failed");
     }
 
   }

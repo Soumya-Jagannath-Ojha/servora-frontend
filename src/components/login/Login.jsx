@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 
 const Login = () => {
@@ -34,14 +35,15 @@ const Login = () => {
           "accessToken",
           JSON.stringify(res.data.data.accessToken)
         );
+        toast.success(res.data.message || "Logged in successfully!");
         navigate("/dashboard");
         setFormdata({ email: "", password: "" });
-        alert(res.data.message);
       } else {
-        alert("Invalid credentials");
+        toast.error(res.data.message || "Invalid credentials");
       }
     } catch (error) {
       console.error(error);
+      toast.error(error.response?.data?.message || "An error occurred during login");
     }
   };
 
