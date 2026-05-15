@@ -1,15 +1,9 @@
-import React from 'react'
-import Login from '../login/Login'
 import { Link } from 'react-router-dom'
-import PageTransition from "../animation/PageTransition";
+import PageTransition from '../components/PageTransition.jsx'
 
-const Home = () => {
-    return (
-        // <div className="container bg-blue-50 w-full h-screen">
-        //     {/* <Login /> */}
-        // </div>
-
-         <PageTransition>
+function HomePage() {
+  return (
+    <PageTransition>
       {/* Hero section - ChronoTask style */}
       <section className="py-16 sm:py-24 relative">
         <div className="max-w-7xl mx-auto px-4 relative">
@@ -187,7 +181,7 @@ const Home = () => {
         </div>
       </section>
     </PageTransition>
-    )
+  )
 }
 
-export default Home
+export default HomePage
