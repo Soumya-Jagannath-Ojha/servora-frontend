@@ -2,22 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-bg-light: #f8f9fa;
-  --color-bg-dark: #0b0a19;
-}
-
 @layer base {
   body {
-    @apply transition-colors duration-300 text-gray-900 bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)];
+    @apply transition-colors duration-300 text-gray-900 bg-[#f8f9fa] dark:bg-[#0b0a19];
     background-image: radial-gradient(circle at center, #d1d5db 1.5px, transparent 1.5px);
     background-size: 28px 28px;
   }
-
   .dark body {
     @apply text-white;
     background-image: radial-gradient(circle at 0% 0%, rgba(67, 56, 202, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 100% 100%, rgba(30, 58, 138, 0.15) 0%, transparent 50%);
+                      radial-gradient(circle at 100% 100%, rgba(30, 58, 138, 0.15) 0%, transparent 50%);
     background-attachment: fixed;
   }
 
@@ -50,13 +44,11 @@
   /* ── Accent Brand Color — driven by tailwind.config.js colors.accent ── */
   .bg-accent-brand {
     background-color: #ef476f;
-
+    
   }
-
   .bg-accent-brand:hover {
     background-color: #ee0335;
   }
-
   .shadow-accent-brand {
     box-shadow: 0 10px 25px -5px rgba(239, 71, 111, 0.4);
   }
@@ -64,7 +56,7 @@
   .text-primary-brand {
     color: #ef476f;
   }
-
+  
   .text-error-brand {
     color: #ef4444;
   }
@@ -73,14 +65,12 @@
     background-color: rgba(239, 68, 68, 0.1);
   }
 }
-
 @layer utilities {
   @keyframes fade-in-up {
     from {
       opacity: 0;
       transform: translateY(60px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
@@ -92,7 +82,6 @@
       opacity: 0;
       transform: translateY(30px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
@@ -105,7 +94,6 @@
       opacity: 0;
       transform: translateX(-60px);
     }
-
     to {
       opacity: 1;
       transform: translateX(0);
@@ -117,7 +105,6 @@
       opacity: 0;
       transform: translateX(60px);
     }
-
     to {
       opacity: 1;
       transform: translateX(0);
@@ -129,7 +116,6 @@
       opacity: 0;
       transform: scale(0.8);
     }
-
     to {
       opacity: 1;
       transform: scale(1);
@@ -137,27 +123,17 @@
   }
 
   @keyframes float {
-
-    0%,
-    100% {
+    0%, 100% {
       transform: translateY(0) rotate(var(--tw-rotate, 0deg));
     }
-
     50% {
       transform: translateY(-20px) rotate(var(--tw-rotate, 0deg));
     }
   }
 
   @keyframes blink {
-
-    0%,
-    100% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   .animate-fade-in-up {
