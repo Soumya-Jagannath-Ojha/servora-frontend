@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useTheme } from '../../context/ThemeContext'
 
 function Root() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme')
-      if (saved) return saved === 'dark'
-      return false
-    }
-    return false
-  })
+  const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark)
-    document.body.classList.toggle('dark', isDark)
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
-  }, [isDark])
 
   useEffect(() => {
     setMenuOpen(false)
@@ -31,6 +19,17 @@ function Root() {
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
   ]
+
+  const isDashboard = location.pathname.startsWith('/dashboard')
+
+  if (isDashboard) {
+    return (
+      <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#0f0d24]">
+        <Toaster position="top-center" reverseOrder={false} />
+        <Outlet />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden">
@@ -67,7 +66,7 @@ function Root() {
               Login
             </Link>
             <button
-              onClick={() => setIsDark(!isDark)}
+              onClick={toggleTheme}
               className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
               aria-label="Toggle theme"
             >
@@ -91,7 +90,7 @@ function Root() {
 
           <div className="flex items-center gap-2 md:hidden">
             <button
-              onClick={() => setIsDark(!isDark)}
+              onClick={toggleTheme}
               className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
               aria-label="Toggle theme"
             >
