@@ -2,56 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-bg-light: #f8f9fa;
+  --color-bg-dark: #0b0a19;
+}
+
 @layer base {
   body {
-    @apply transition-colors duration-300 text-gray-900 bg-[#f8f9fa] dark:bg-[#0b0a19];
+    @apply transition-colors duration-300 text-gray-900 bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)];
     background-image: radial-gradient(circle at center, #d1d5db 1.5px, transparent 1.5px);
     background-size: 28px 28px;
   }
+
   .dark body {
     @apply text-white;
     background-image: radial-gradient(circle at 0% 0%, rgba(67, 56, 202, 0.15) 0%, transparent 50%),
-                      radial-gradient(circle at 100% 100%, rgba(30, 58, 138, 0.15) 0%, transparent 50%);
+      radial-gradient(circle at 100% 100%, rgba(30, 58, 138, 0.15) 0%, transparent 50%);
     background-attachment: fixed;
   }
 
   .bg-nebula {
     background: linear-gradient(135deg, #0f0d24 0%, #161432 100%);
   }
-  /* Force dark backgrounds for cards and buttons in dark mode if Tailwind utilities fail */
-  .dark .bg-white:not(.no-dark-override):not(.force-white), .dark .bg-gray-50, .dark .bg-gray-100, .dark .bg-amber-50 {
-    background-color: rgba(31, 41, 55, 0.8) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-  }
-  /* Force white for specific elements that MUST stay white */
-  .dark .force-white {
-    background-color: white !important;
-    color: white !important;
-  }
-  /* Prevent color/background overrides for custom badges */
-  .dark .no-dark-override {
-    color: inherit !important;
-  }
-  /* Ensure text visibility inside dark cards/buttons */
-  .dark h1, .dark h2, .dark h3, .dark span, .dark p, .dark a, .dark button, .dark label, .dark input {
-    color: white !important;
-  }
-  /* Specific override for secondary text to keep it muted but visible */
-  .dark .text-gray-500, .dark .text-gray-400 {
-    color: #9ca3af !important;
-  }
-  /* Fix for placeholders in dark mode */
-  .dark input::placeholder {
-    color: #6b7280 !important;
-  }
 }
 
+@layer components {
   .glass-card {
-    @apply bg-white dark:bg-gray-800/50 backdrop-blur-[20px] border border-gray-100 dark:border-white/10 shadow-sm transition-all duration-300;
+    @apply bg-white dark:bg-white/5 backdrop-blur-[20px] border border-gray-100 dark:border-white/10 shadow-xl shadow-gray-200/50 dark:shadow-black/40 transition-all duration-300;
   }
 
   .glass-card:hover {
-    @apply border-blue-100 dark:border-blue-500/30 shadow-md -translate-y-1;
+    @apply border-blue-100 dark:border-blue-500/30 shadow-2xl shadow-blue-500/10 dark:shadow-blue-500/10 -translate-y-1.5;
   }
 
   .nav-item-active {
@@ -66,12 +47,32 @@
     transition: height 1s ease-in-out;
   }
 
+  /* ── Accent Brand Color — driven by tailwind.config.js colors.accent ── */
+  .bg-accent-brand {
+    background-color: #ef476f;
 
+  }
 
+  .bg-accent-brand:hover {
+    background-color: #ee0335;
+  }
 
+  .shadow-accent-brand {
+    box-shadow: 0 10px 25px -5px rgba(239, 71, 111, 0.4);
+  }
 
+  .text-primary-brand {
+    color: #ef476f;
+  }
 
+  .text-error-brand {
+    color: #ef4444;
+  }
 
+  .bg-error-soft {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+}
 
 @layer utilities {
   @keyframes fade-in-up {
@@ -79,6 +80,7 @@
       opacity: 0;
       transform: translateY(60px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -90,6 +92,7 @@
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -102,6 +105,7 @@
       opacity: 0;
       transform: translateX(-60px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -113,6 +117,7 @@
       opacity: 0;
       transform: translateX(60px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -124,6 +129,7 @@
       opacity: 0;
       transform: scale(0.8);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
@@ -131,17 +137,27 @@
   }
 
   @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translateY(0) rotate(var(--tw-rotate, 0deg));
     }
+
     50% {
       transform: translateY(-20px) rotate(var(--tw-rotate, 0deg));
     }
   }
 
   @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
   }
 
   .animate-fade-in-up {

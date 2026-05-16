@@ -112,12 +112,13 @@ const taskData = [
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="flex min-h-screen bg-[#f8f9fa] dark:bg-[#0b0a19] text-gray-900 dark:text-white font-geist transition-all duration-700 ease-in-out overflow-x-hidden">
+    <div className="flex min-h-screen bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)] text-gray-900 dark:text-white font-geist transition-all duration-700 ease-in-out overflow-x-hidden">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -126,11 +127,19 @@ const Dashboard = () => {
         />
       )}
 
+      {/* Profile Menu Overlay (to close when clicking outside) */}
+      {isProfileOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsProfileOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0b0a19] border-r border-gray-100 dark:border-white/5 flex flex-col py-8 px-6 z-[70] transition-all duration-700 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0b0a19] border-r border-gray-100 dark:border-white/5 flex flex-col py-8 px-6 z-[70] transition-all duration-700 transform shadow-2xl shadow-gray-200/50 dark:shadow-black/60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="flex items-center justify-between mb-10 px-2 lg:block">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <div className="w-9 h-9 bg-accent-brand rounded-lg flex items-center justify-center shadow-accent-brand">
               <span className="material-symbols-outlined text-white font-bold text-xl">rocket_launch</span>
             </div>
             <div>
@@ -153,7 +162,7 @@ const Dashboard = () => {
         </nav>
 
         <div className="mt-auto pt-6 border-t border-gray-100 dark:border-white/5">
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 mb-4 transition-all active:scale-95 shadow-lg shadow-blue-500/20 text-sm">
+          <button className="w-full bg-accent-brand text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 mb-4 transition-all active:scale-95 shadow-accent-brand text-sm">
             <span className="material-symbols-outlined text-base">add</span>
             <span>Create Project</span>
           </button>
@@ -163,7 +172,7 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <main className={`flex-1 min-h-screen transition-all duration-700 ${isSidebarOpen ? 'lg:ml-72' : 'lg:ml-72'}`}>
         {/* Top App Bar */}
-        <header className="sticky top-0 z-40 bg-white/80 dark:bg-[#0b0a19]/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 h-20 flex justify-between items-center px-6 md:px-12 transition-colors duration-700">
+        <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0b0a19]/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 h-20 flex justify-between items-center px-6 md:px-12 transition-colors duration-700">
           <div className="flex items-center gap-4 flex-1">
             <button onClick={toggleSidebar} className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-white/5 rounded-xl transition-all duration-300">
                <span className="material-symbols-outlined">menu</span>
@@ -185,22 +194,57 @@ const Dashboard = () => {
               className={`flex transition-colors duration-700 ${isDark ? 'text-amber-500' : 'text-blue-400'}`}
             />
             <IconButton icon="notifications" badge className="flex" />
-            <div className="flex items-center gap-4 pl-0 md:pl-4 border-l-0 md:border-l border-gray-100 dark:border-white/5">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-bold text-gray-900 dark:text-white">Alex Rivera</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Senior Lead</p>
-              </div>
-              <img 
-                alt="Profile" 
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-gray-200 dark:border-white/10 object-cover" 
-                src="https://images.unsplash.com/photo-1769874824925-49a927d4205a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-              />
+            
+            {/* User Profile with Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-4 pl-0 md:pl-4 border-l-0 md:border-l border-gray-100 dark:border-white/5 group transition-all"
+              >
+                <div className="text-right hidden md:block group-hover:opacity-70 transition-opacity">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">Alex Rivera</p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Senior Lead</p>
+                </div>
+                <img 
+                  alt="Profile" 
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-gray-200 dark:border-white/10 object-cover ring-0 group-hover:ring-4 ring-accent-brand/10 transition-all" 
+                  src="https://images.unsplash.com/photo-1769874824925-49a927d4205a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-[#161432] rounded-[24px] shadow-2xl border border-gray-100 dark:border-white/5 py-3 z-50 animate-scale-in backdrop-blur-xl">
+                  <div className="px-4 py-3 border-b border-gray-50 dark:border-white/5 md:hidden">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Alex Rivera</p>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Senior Lead</p>
+                  </div>
+                  <div className="p-2 space-y-1">
+                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all group">
+                      <span className="material-symbols-outlined text-lg group-hover:text-primary-brand transition-colors">person</span>
+                      <span>My Profile</span>
+                    </button>
+                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all group">
+                      <span className="material-symbols-outlined text-lg group-hover:text-primary-brand transition-colors">settings</span>
+                      <span>Account Settings</span>
+                    </button>
+                    <div className="h-px bg-gray-50 dark:bg-white/5 my-2 mx-2"></div>
+                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-black text-error-brand hover:bg-error-soft rounded-xl transition-all group">
+                      <span className="material-symbols-outlined text-lg">logout</span>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
 
         {/* Dashboard Body */}
-        <div className="p-6 md:p-12 space-y-10 max-w-[1600px] mx-auto animate-fade-in-up">
+        <div 
+          key={activeTab}
+          className="p-6 md:p-12 space-y-10 max-w-[1600px] mx-auto animate-fade-in-up shadow-inner dark:shadow-black/20"
+        >
           {activeTab === "Dashboard" ? (
             <MainDashboardView onSeeAllProjects={() => setActiveTab("My Projects")} />
           ) : activeTab === "My Projects" ? (
@@ -324,32 +368,44 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
 const MyProjectsView = () => {
   return (
     <div className="space-y-10">
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Projects</h2>
-          <div className="flex items-center gap-2 mt-2">
-             <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-             <p className="text-sm text-gray-500 font-bold">14 Active Projects</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center justify-between w-full sm:w-auto">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Projects</h2>
+            <div className="flex items-center gap-2 mt-1">
+               <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+               <p className="text-[11px] text-gray-500 font-bold">14 Active Projects</p>
+            </div>
+          </div>
+          <div className="flex sm:hidden bg-gray-100 dark:bg-white/5 p-1 rounded-xl h-10 items-center">
+             <button className="h-full px-3 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
+                <span className="material-symbols-outlined text-base">grid_view</span>
+             </button>
+             <button className="h-full px-3 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
+                <span className="material-symbols-outlined text-base">list</span>
+             </button>
           </div>
         </div>
         
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl h-11 items-center">
-             <button className="h-full px-3 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-start sm:justify-end">
+          <div className="grid grid-cols-2 sm:flex gap-3 w-full sm:w-auto">
+            <button className="flex items-center justify-between px-4 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
+               <span>Status: All</span>
+               <span className="material-symbols-outlined text-sm">expand_more</span>
+            </button>
+            <button className="flex items-center justify-between px-4 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
+               <span>Category: All</span>
+               <span className="material-symbols-outlined text-sm">expand_more</span>
+            </button>
+          </div>
+          <div className="hidden sm:flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl h-11 items-center">
+             <button className="h-full px-4 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
                 <span className="material-symbols-outlined text-lg">grid_view</span>
              </button>
-             <button className="h-full px-3 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
+             <button className="h-full px-4 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-lg">list</span>
              </button>
           </div>
-          <button className="flex items-center gap-2 px-5 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
-             Status: All
-             <span className="material-symbols-outlined text-sm">expand_more</span>
-          </button>
-          <button className="flex items-center gap-2 px-5 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
-             Category: All
-             <span className="material-symbols-outlined text-sm">expand_more</span>
-          </button>
         </div>
       </div>
 
@@ -551,7 +607,7 @@ const NavItem = ({ icon, label, active = false, onClick }) => (
         : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
     }`}
   >
-    <span className={`material-symbols-outlined text-xl ${active ? "text-blue-600" : ""}`}>{icon}</span>
+    <span className={`material-symbols-outlined text-xl ${active ? "text-primary-brand" : ""}`}>{icon}</span>
     <span className={`text-sm font-bold tracking-tight ${active ? "font-black" : ""}`}>{label}</span>
   </button>
 );

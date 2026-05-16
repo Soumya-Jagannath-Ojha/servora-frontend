@@ -1,4 +1,34 @@
 /** @type {import('tailwindcss').Config} */
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  SERVORA DESIGN TOKENS — Single Source of Truth
+//  Change any color HERE and it cascades across the ENTIRE application.
+//  These values generate Tailwind utility classes: bg-accent, text-primary, etc.
+// ═══════════════════════════════════════════════════════════════════════════
+const colors = {
+  // ── Brand Colors ──────────────────────────────────────────
+  primary:          "#ef476f",   // Main blue — buttons, links, active states
+  "primary-hover":  "#ee0335",   // Darker blue on hover
+  accent:           "#ef476f",   // Accent orange — logo, CTA button
+  "accent-hover":   "#ee0335",   // Lighter orange on hover
+
+  // ── Semantic / Status Colors ───────────────────────────────
+  "success-green":  "#10b981",   // Green — completed, on-track
+  "warning-orange": "#f59e0b",   // Amber — review, caution
+  "error-red":      "#ef4444",   // Red — errors, delayed
+  secondary:        "#64748b",   // Secondary text / muted
+
+  // ── Surfaces & Backgrounds ─────────────────────────────────
+  background:       "#f8f9fa",   // Page background (light mode)
+  surface:          "#ffffff",   // Card / panel surface (light mode)
+  "surface-dark":   "#0b0a19",   // Card / panel surface (dark mode)
+  outline:          "#e2e8f0",   // Borders, dividers
+
+  // ── Typography ─────────────────────────────────────────────
+  "text-base":      "#1e293b",   // Primary body text
+  "text-muted":     "#64748b",   // Secondary / helper text
+};
+
 export default {
   darkMode: "class",
   content: [
@@ -7,22 +37,7 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: "#2563eb",
-        "on-primary": "#ffffff",
-        secondary: "#64748b",
-        "on-secondary": "#1e293b",
-        background: "#f8f9fa",
-        surface: "#ffffff",
-        "surface-glass": "rgba(255, 255, 255, 0.7)",
-        "pane-glass": "rgba(255, 255, 255, 0.8)",
-        outline: "#e2e8f0",
-        "on-surface": "#1e293b",
-        "on-surface-variant": "#64748b",
-        "success-green": "#10b981",
-        "warning-orange": "#f59e0b",
-        "error-red": "#ef4444",
-      },
+      colors,
       fontFamily: {
         sans: ['Geist', 'Outfit', 'system-ui', 'sans-serif'],
         geist: ['Geist', 'sans-serif'],
