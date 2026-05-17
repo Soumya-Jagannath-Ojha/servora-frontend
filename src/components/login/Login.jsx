@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 
@@ -11,6 +11,7 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
   const navigate = useNavigate();
@@ -22,19 +23,19 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const apiUrl = import.meta.env.VITE_BACKEND_URI;
       const res = await axios.post(`${apiUrl}/api/v1/auth/login`, {
         email: formdata.email,
         password: formdata.password,
+      }, {
+        withCredentials: true
       });
 
       if (res.data.success === true) {
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(res.data.data.accessToken)
-        );
+        localStorage.setItem("isAuthenticated", "true");
         toast.success(res.data.message || "Logged in successfully!");
         navigate("/dashboard");
         setFormdata({ email: "", password: "" });
@@ -44,6 +45,8 @@ const Login = () => {
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "An error occurred during login");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,8 +105,19 @@ const Login = () => {
               </Link>
             </div>
 
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
-              Sign in
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:hover:bg-blue-600 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:transform-none"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </form>
 

@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeContext";
 
 const projectData = [
@@ -114,8 +117,33 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleLogout = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_BACKEND_URI;
+      
+      const res = await axios.post(`${apiUrl}/api/v1/auth/logout`, {}, {
+        withCredentials: true
+      });
+      
+      if (res.data.success) {
+        localStorage.removeItem("isAuthenticated");
+        toast.success(res.data.message || "Logged out successfully!");
+        navigate("/");
+      } else {
+        toast.error(res.data.message || "Failed to logout");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "An error occurred during logout");
+      // Fallback: clear flag and redirect anyway if the backend call fails
+      localStorage.removeItem("isAuthenticated");
+      navigate("/");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)] text-gray-900 dark:text-white font-geist transition-all duration-700 ease-in-out overflow-x-hidden">
@@ -229,7 +257,7 @@ const Dashboard = () => {
                       <span>Account Settings</span>
                     </button>
                     <div className="h-px bg-gray-50 dark:bg-white/5 my-2 mx-2"></div>
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-black text-error-brand hover:bg-error-soft rounded-xl transition-all group">
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-black text-error-brand hover:bg-error-soft rounded-xl transition-all group">
                       <span className="material-symbols-outlined text-lg">logout</span>
                       <span>Logout</span>
                     </button>
