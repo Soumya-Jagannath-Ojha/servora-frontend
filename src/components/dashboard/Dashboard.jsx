@@ -172,7 +172,6 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-black tracking-tight text-gray-900 dark:text-white leading-none">Servora</h1>
-              <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Nebula Engine</p>
             </div>
           </div>
           <button onClick={toggleSidebar} className="lg:hidden p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
