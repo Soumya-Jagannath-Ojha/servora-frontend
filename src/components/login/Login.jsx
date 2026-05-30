@@ -37,7 +37,20 @@ const Login = () => {
       if (res.data.success === true) {
         localStorage.setItem("isAuthenticated", "true");
         toast.success(res.data.message || "Logged in successfully!");
-        navigate("/dashboard");
+        
+        try {
+          const userRes = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
+          const user = userRes.data?.data?.user;
+          if (user && (!user.company || !user.setupCompleted)) {
+            navigate("/setup-workspace");
+          } else {
+            navigate("/dashboard");
+          }
+        } catch (userErr) {
+          console.error(userErr);
+          navigate("/dashboard");
+        }
+        
         setFormdata({ email: "", password: "" });
       } else {
         toast.error(res.data.message || "Invalid credentials");

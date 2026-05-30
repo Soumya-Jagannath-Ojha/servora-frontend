@@ -10,6 +10,7 @@ const CompaniesListView = () => {
   const [limit] = React.useState(10);
   const [search, setSearch] = React.useState("");
   const [loading, setLoading] = React.useState(true);
+  const [planFilter, setPlanFilter] = React.useState("");
 
   // Create Company Form States
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
@@ -18,6 +19,7 @@ const CompaniesListView = () => {
   const [newCompanySlug, setNewCompanySlug] = React.useState("");
   const [newCompanyPlan, setNewCompanyPlan] = React.useState("free");
   const [newCompanyLogoUrl, setNewCompanyLogoUrl] = React.useState("");
+  const [newCompanyLogoPath, setNewCompanyLogoPath] = React.useState("");
 
   // Edit/View Company Form States
   const [editModalOpen, setEditModalOpen] = React.useState(false);
@@ -32,6 +34,7 @@ const CompaniesListView = () => {
   const [editCompanyCurrency, setEditCompanyCurrency] = React.useState("INR");
   const [editCompanyLanguage, setEditCompanyLanguage] = React.useState("en");
   const [editCompanyLogoUrl, setEditCompanyLogoUrl] = React.useState("");
+  const [editCompanyLogoPath, setEditCompanyLogoPath] = React.useState("");
 
   const handleOpenEditModal = (c) => {
     setSelectedCompany(c);
@@ -45,6 +48,7 @@ const CompaniesListView = () => {
     setEditCompanyCurrency(c.settings?.currency || "INR");
     setEditCompanyLanguage(c.settings?.language || "en");
     setEditCompanyLogoUrl(c.logo?.url || "");
+    setEditCompanyLogoPath(c.logo?.localPath || "");
     setEditModalOpen(true);
   };
 
@@ -63,7 +67,8 @@ const CompaniesListView = () => {
         plan: editCompanyPlan,
         isActive: editCompanyIsActive,
         logo: {
-          url: editCompanyLogoUrl
+          url: editCompanyLogoUrl,
+          localPath: editCompanyLogoPath
         },
         settings: {
           timezone: editCompanyTimezone,
@@ -90,6 +95,11 @@ const CompaniesListView = () => {
     const formData = new FormData();
     formData.append("logo", file);
     
+    const previousPath = isEdit ? editCompanyLogoPath : newCompanyLogoPath;
+    if (previousPath) {
+      formData.append("previousPath", previousPath);
+    }
+    
     try {
       toast.loading("Uploading logo...", { id: "logo-upload" });
       const res = await axios.post(`${apiUrl}/api/v1/companies/upload-logo`, formData, {
@@ -101,10 +111,13 @@ const CompaniesListView = () => {
       
       if (res.data?.success) {
         const uploadedUrl = res.data.data.logoUrl;
+        const uploadedLocalPath = res.data.data.localPath;
         if (isEdit) {
           setEditCompanyLogoUrl(uploadedUrl);
+          setEditCompanyLogoPath(uploadedLocalPath);
         } else {
           setNewCompanyLogoUrl(uploadedUrl);
+          setNewCompanyLogoPath(uploadedLocalPath);
         }
         toast.success("Logo uploaded successfully!", { id: "logo-upload" });
       }
@@ -120,7 +133,7 @@ const CompaniesListView = () => {
     setLoading(true);
     try {
       const res = await axios.get(`${apiUrl}/api/v1/companies`, {
-        params: { page, limit, search },
+        params: { page, limit, search, plan: planFilter },
         withCredentials: true
       });
       if (res.data?.success) {
@@ -137,7 +150,7 @@ const CompaniesListView = () => {
 
   React.useEffect(() => {
     fetchCompanies();
-  }, [page, search]);
+  }, [page, search, planFilter]);
 
   const handleToggleStatus = async (companyId, currentStatus) => {
     try {
@@ -202,7 +215,8 @@ const CompaniesListView = () => {
         slug: newCompanySlug || undefined,
         plan: newCompanyPlan,
         logo: {
-          url: newCompanyLogoUrl
+          url: newCompanyLogoUrl,
+          localPath: newCompanyLogoPath
         }
       }, { withCredentials: true });
 
@@ -214,6 +228,7 @@ const CompaniesListView = () => {
         setNewCompanySlug("");
         setNewCompanyPlan("free");
         setNewCompanyLogoUrl("");
+        setNewCompanyLogoPath("");
         fetchCompanies();
       }
     } catch (err) {
@@ -243,6 +258,18 @@ const CompaniesListView = () => {
               placeholder="Search companies..."
               className="w-full bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500 shadow-sm"
             />
+          </div>
+          <div className="relative">
+            <select
+              value={planFilter}
+              onChange={(e) => { setPlanFilter(e.target.value); setPage(1); }}
+              className="h-11 pl-4 pr-10 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl text-xs font-bold transition-all dark:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-white/10 shadow-sm"
+            >
+              <option value="" className="bg-white dark:bg-[#161432]">All Plans</option>
+              <option value="free" className="bg-white dark:bg-[#161432]">Free</option>
+              <option value="pro" className="bg-white dark:bg-[#161432]">Pro</option>
+              <option value="enterprise" className="bg-white dark:bg-[#161432]">Enterprise</option>
+            </select>
           </div>
           <button 
             onClick={() => setCreateModalOpen(true)}

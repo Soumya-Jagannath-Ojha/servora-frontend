@@ -11,6 +11,8 @@ import SolutionsPage from "../components/pages/landingpage/SolutionsPage";
 import PricingPage from "../components/pages/landingpage/PricingPage";
 import AboutPage from "../components/pages/landingpage/AboutPage";
 import ContactPage from "../components/pages/landingpage/ContactPage";
+import SetupWorkspace from "../components/workspace/SetupWorkspace";
+
 
 
 
@@ -64,6 +66,14 @@ export const paths = createBrowserRouter([
                     <ProtectedRoute>
                         <Dashboard/>
                     </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/setup-workspace",
+                element: (
+                     <ProtectedRoute>
+                         <SetupWorkspace/>
+                     </ProtectedRoute>
                 ),
             },
         ]

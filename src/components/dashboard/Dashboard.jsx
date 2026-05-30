@@ -125,6 +125,22 @@ const Dashboard = () => {
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    const checkUserSetupStatus = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_BACKEND_URI;
+        const res = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
+        const user = res.data?.data?.user;
+        if (user && (!user.company || !user.setupCompleted)) {
+          navigate("/setup-workspace");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    checkUserSetupStatus();
+  }, [navigate]);
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const handleLogout = async () => {
