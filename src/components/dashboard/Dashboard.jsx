@@ -4,6 +4,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeContext";
 
+// Modular Components
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import RolesPermissionsView from "./RolesPermissionsView";
+import CompaniesListView from "./CompaniesListView";
+
 const projectData = [
   {
     id: 1,
@@ -124,11 +130,11 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       const apiUrl = import.meta.env.VITE_BACKEND_URI;
-      
+
       const res = await axios.post(`${apiUrl}/api/v1/auth/logout`, {}, {
         withCredentials: true
       });
-      
+
       if (res.data.success) {
         localStorage.removeItem("isAuthenticated");
         toast.success(res.data.message || "Logged out successfully!");
@@ -147,128 +153,27 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)] text-gray-900 dark:text-white font-geist transition-all duration-700 ease-in-out overflow-x-hidden">
-      {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] lg:hidden transition-opacity" 
-          onClick={toggleSidebar}
-        />
-      )}
-
-      {/* Profile Menu Overlay (to close when clicking outside) */}
-      {isProfileOpen && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setIsProfileOpen(false)}
-        />
-      )}
-
+      
       {/* Sidebar Navigation */}
-      <aside className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0b0a19] border-r border-gray-100 dark:border-white/5 flex flex-col py-8 px-6 z-[70] transition-all duration-700 transform shadow-2xl shadow-gray-200/50 dark:shadow-black/60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="flex items-center justify-between mb-10 px-2 lg:block">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-accent-brand rounded-lg flex items-center justify-center shadow-accent-brand">
-              <span className="material-symbols-outlined text-white font-bold text-xl">rocket_launch</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-black tracking-tight text-gray-900 dark:text-white leading-none">Servora</h1>
-            </div>
-          </div>
-          <button onClick={toggleSidebar} className="lg:hidden p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-             <span className="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        
-        <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
-          <NavItem icon="grid_view" label="Dashboard" active={activeTab === "Dashboard"} onClick={() => { setActiveTab("Dashboard"); setIsSidebarOpen(false); }} />
-          <NavItem icon="folder" label="My Projects" active={activeTab === "My Projects"} onClick={() => { setActiveTab("My Projects"); setIsSidebarOpen(false); }} />
-          <NavItem icon="assignment" label="Tasks" active={activeTab === "Tasks"} onClick={() => { setActiveTab("Tasks"); setIsSidebarOpen(false); }} />
-          <NavItem icon="group" label="Team Members" active={activeTab === "Team Members"} onClick={() => { setActiveTab("Team Members"); setIsSidebarOpen(false); }} />
-          <NavItem icon="description" label="Notes" active={activeTab === "Notes"} onClick={() => { setActiveTab("Notes"); setIsSidebarOpen(false); }} />
-          <NavItem icon="settings" label="Settings" active={activeTab === "Settings"} onClick={() => { setActiveTab("Settings"); setIsSidebarOpen(false); }} />
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-gray-100 dark:border-white/5">
-          <button className="w-full bg-accent-brand text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 mb-4 transition-all active:scale-95 shadow-accent-brand text-sm">
-            <span className="material-symbols-outlined text-base">add</span>
-            <span>Create Project</span>
-          </button>
-        </div>
-      </aside>
+      <Sidebar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        isSidebarOpen={isSidebarOpen} 
+        toggleSidebar={toggleSidebar} 
+      />
 
       {/* Main Content Area */}
-      <main className={`flex-1 min-h-screen transition-all duration-700 ${isSidebarOpen ? 'lg:ml-72' : 'lg:ml-72'}`}>
+      <main className="flex-1 min-h-screen transition-all duration-700 lg:ml-72">
         {/* Top App Bar */}
-        <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0b0a19]/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 h-20 flex justify-between items-center px-6 md:px-12 transition-colors duration-700">
-          <div className="flex items-center gap-4 flex-1">
-            <button onClick={toggleSidebar} className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-white/5 rounded-xl transition-all duration-300">
-               <span className="material-symbols-outlined">menu</span>
-            </button>
-            <div className="relative w-full max-w-xl hidden sm:block">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</span>
-              <input 
-                className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-2xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-blue-500/20 text-sm transition-all dark:text-white dark:placeholder-gray-500" 
-                placeholder="Search resources, projects or team..." 
-                type="text"
-              />
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3 md:gap-6">
-            <IconButton 
-              icon={isDark ? "light_mode" : "dark_mode"} 
-              onClick={toggleTheme}
-              className={`flex transition-colors duration-700 ${isDark ? 'text-amber-500' : 'text-blue-400'}`}
-            />
-            <IconButton icon="notifications" badge className="flex" />
-            
-            {/* User Profile with Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-4 pl-0 md:pl-4 border-l-0 md:border-l border-gray-100 dark:border-white/5 group transition-all"
-              >
-                <div className="text-right hidden md:block group-hover:opacity-70 transition-opacity">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">Alex Rivera</p>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Senior Lead</p>
-                </div>
-                <img 
-                  alt="Profile" 
-                  className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-gray-200 dark:border-white/10 object-cover ring-0 group-hover:ring-4 ring-accent-brand/10 transition-all" 
-                  src="https://images.unsplash.com/photo-1769874824925-49a927d4205a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                />
-              </button>
-
-              {/* Dropdown Menu */}
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-[#161432] rounded-[24px] shadow-2xl border border-gray-100 dark:border-white/5 py-3 z-50 animate-scale-in backdrop-blur-xl">
-                  <div className="px-4 py-3 border-b border-gray-50 dark:border-white/5 md:hidden">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Alex Rivera</p>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Senior Lead</p>
-                  </div>
-                  <div className="p-2 space-y-1">
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all group">
-                      <span className="material-symbols-outlined text-lg group-hover:text-primary-brand transition-colors">person</span>
-                      <span>My Profile</span>
-                    </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all group">
-                      <span className="material-symbols-outlined text-lg group-hover:text-primary-brand transition-colors">settings</span>
-                      <span>Account Settings</span>
-                    </button>
-                    <div className="h-px bg-gray-50 dark:bg-white/5 my-2 mx-2"></div>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-black text-error-brand hover:bg-error-soft rounded-xl transition-all group">
-                      <span className="material-symbols-outlined text-lg">logout</span>
-                      <span>Logout</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+        <Header 
+          toggleSidebar={toggleSidebar} 
+          isDark={isDark} 
+          toggleTheme={toggleTheme} 
+          handleLogout={handleLogout} 
+        />
 
         {/* Dashboard Body */}
-        <div 
+        <div
           key={activeTab}
           className="p-6 md:p-12 space-y-10 max-w-[1600px] mx-auto animate-fade-in-up shadow-inner dark:shadow-black/20"
         >
@@ -276,6 +181,10 @@ const Dashboard = () => {
             <MainDashboardView onSeeAllProjects={() => setActiveTab("My Projects")} />
           ) : activeTab === "My Projects" ? (
             <MyProjectsView />
+          ) : activeTab === "Roles & Permissions" ? (
+            <RolesPermissionsView />
+          ) : activeTab === "Companies" ? (
+            <CompaniesListView />
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400">
               <span className="material-symbols-outlined text-6xl mb-4 animate-float">construction</span>
@@ -315,8 +224,8 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
       <div className="xl:col-span-2 space-y-10">
         <section>
           <div className="flex justify-between items-center mb-6">
-             <h3 className="text-xl font-black text-gray-900 dark:text-white">Recent Projects</h3>
-             <button onClick={onSeeAllProjects} className="text-sm font-bold text-blue-600 hover:underline">View all projects</button>
+            <h3 className="text-xl font-black text-gray-900 dark:text-white">Recent Projects</h3>
+            <button onClick={onSeeAllProjects} className="text-sm font-bold text-blue-600 hover:underline">View all projects</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <RecentProjectCard name="Nebula UI Kit" desc="Design system for enterprise monitoring.." progress={70} status="IN PROGRESS" statusColor="emerald" icon="cloud" iconBg="bg-blue-500/10" iconColor="text-blue-500" />
@@ -326,20 +235,20 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
         </section>
 
         <section className="glass-card p-8 rounded-[32px] space-y-6">
-           <div className="flex justify-between items-center">
-             <div>
-               <h3 className="text-xl font-black text-gray-900 dark:text-white">System Load</h3>
-               <p className="text-xs text-gray-400 mt-1 font-bold">Real-time resource allocation monitoring.</p>
-             </div>
-             <span className="material-symbols-outlined text-gray-400">more_horiz</span>
-           </div>
-           <div className="flex items-end gap-3 h-48 pt-4">
-              {[40, 60, 30, 90, 50, 70, 100, 60, 40].map((h, i) => (
-                <div key={i} className="flex-1 bg-gray-100 dark:bg-white/5 rounded-t-lg transition-all hover:bg-blue-500/20 relative group" style={{ height: `${h}%` }}>
-                   <div className={`absolute inset-0 rounded-t-lg transition-all ${h > 80 ? 'bg-blue-400/40' : h > 50 ? 'bg-blue-400/20' : 'bg-transparent'}`}></div>
-                </div>
-              ))}
-           </div>
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-xl font-black text-gray-900 dark:text-white">System Load</h3>
+              <p className="text-xs text-gray-400 mt-1 font-bold">Real-time resource allocation monitoring.</p>
+            </div>
+            <span className="material-symbols-outlined text-gray-400">more_horiz</span>
+          </div>
+          <div className="flex items-end gap-3 h-48 pt-4">
+            {[40, 60, 30, 90, 50, 70, 100, 60, 40].map((h, i) => (
+              <div key={i} className="flex-1 bg-gray-100 dark:bg-white/5 rounded-t-lg transition-all hover:bg-blue-500/20 relative group" style={{ height: `${h}%` }}>
+                <div className={`absolute inset-0 rounded-t-lg transition-all ${h > 80 ? 'bg-blue-400/40' : h > 50 ? 'bg-blue-400/20' : 'bg-transparent'}`}></div>
+              </div>
+            ))}
+          </div>
         </section>
       </div>
 
@@ -352,9 +261,9 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
           </div>
           <div className="space-y-5">
             <div className="grid grid-cols-3 text-[10px] font-black text-gray-400 uppercase tracking-widest pb-2 border-b border-gray-100 dark:border-white/5">
-               <span>Task Name</span>
-               <span className="text-center">Priority</span>
-               <span className="text-right">Status</span>
+              <span>Task Name</span>
+              <span className="text-center">Priority</span>
+              <span className="text-right">Status</span>
             </div>
             {taskData.map(task => (
               <div key={task.id} className="grid grid-cols-3 items-center group">
@@ -376,14 +285,14 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
         </section>
 
         <section className="bg-blue-600 rounded-[32px] p-8 text-white relative overflow-hidden group shadow-xl shadow-blue-500/20">
-           <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
-           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-400/20 rounded-full blur-3xl"></div>
-           
-           <div className="relative z-10 space-y-6">
-              <h3 className="text-2xl font-black tracking-tight">Pro Feature</h3>
-              <p className="text-sm font-medium text-blue-50/80 leading-relaxed">Unlock advanced analytics and team performance metrics.</p>
-              <button className="w-full py-3 bg-white text-blue-600 font-black rounded-xl hover:bg-blue-50 transition-all shadow-lg active:scale-95">Upgrade Now</button>
-           </div>
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-400/20 rounded-full blur-3xl"></div>
+
+          <div className="relative z-10 space-y-6">
+            <h3 className="text-2xl font-black tracking-tight">Pro Feature</h3>
+            <p className="text-sm font-medium text-blue-50/80 leading-relaxed">Unlock advanced analytics and team performance metrics.</p>
+            <button className="w-full py-3 bg-white text-blue-600 font-black rounded-xl hover:bg-blue-50 transition-all shadow-lg active:scale-95">Upgrade Now</button>
+          </div>
         </section>
       </div>
     </div>
@@ -400,38 +309,38 @@ const MyProjectsView = () => {
           <div>
             <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Projects</h2>
             <div className="flex items-center gap-2 mt-1">
-               <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-               <p className="text-[11px] text-gray-500 font-bold">14 Active Projects</p>
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+              <p className="text-[11px] text-gray-500 font-bold">14 Active Projects</p>
             </div>
           </div>
           <div className="flex sm:hidden bg-gray-100 dark:bg-white/5 p-1 rounded-xl h-10 items-center">
-             <button className="h-full px-3 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
-                <span className="material-symbols-outlined text-base">grid_view</span>
-             </button>
-             <button className="h-full px-3 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
-                <span className="material-symbols-outlined text-base">list</span>
-             </button>
+            <button className="h-full px-3 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
+              <span className="material-symbols-outlined text-base">grid_view</span>
+            </button>
+            <button className="h-full px-3 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
+              <span className="material-symbols-outlined text-base">list</span>
+            </button>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-start sm:justify-end">
           <div className="grid grid-cols-2 sm:flex gap-3 w-full sm:w-auto">
             <button className="flex items-center justify-between px-4 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
-               <span>Status: All</span>
-               <span className="material-symbols-outlined text-sm">expand_more</span>
+              <span>Status: All</span>
+              <span className="material-symbols-outlined text-sm">expand_more</span>
             </button>
             <button className="flex items-center justify-between px-4 h-11 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm">
-               <span>Category: All</span>
-               <span className="material-symbols-outlined text-sm">expand_more</span>
+              <span>Category: All</span>
+              <span className="material-symbols-outlined text-sm">expand_more</span>
             </button>
           </div>
           <div className="hidden sm:flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl h-11 items-center">
-             <button className="h-full px-4 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
-                <span className="material-symbols-outlined text-lg">grid_view</span>
-             </button>
-             <button className="h-full px-4 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
-                <span className="material-symbols-outlined text-lg">list</span>
-             </button>
+            <button className="h-full px-4 rounded-lg bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white flex items-center justify-center">
+              <span className="material-symbols-outlined text-lg">grid_view</span>
+            </button>
+            <button className="h-full px-4 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
+              <span className="material-symbols-outlined text-lg">list</span>
+            </button>
           </div>
         </div>
       </div>
@@ -439,9 +348,9 @@ const MyProjectsView = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {projectData.map((project) => (
           project.isLarge ? (
-             <LargeProjectCard key={project.id} project={project} />
+            <LargeProjectCard key={project.id} project={project} />
           ) : (
-             <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} />
           )
         ))}
       </div>
@@ -462,13 +371,13 @@ const StatCard = ({ label, value, subValue, subColor, hasTrend, isProgress, prog
       {subValue && <p className={`text-[11px] font-bold ${subColor}`}>{subValue}</p>}
       {hasTrend && (
         <div className="flex items-center gap-1.5 text-emerald-500">
-           <span className="material-symbols-outlined text-sm">trending_up</span>
+          <span className="material-symbols-outlined text-sm">trending_up</span>
         </div>
       )}
     </div>
     {isProgress && (
       <div className="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden mt-2">
-         <div className="h-full bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
+        <div className="h-full bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
       </div>
     )}
   </div>
@@ -480,9 +389,8 @@ const RecentProjectCard = ({ name, desc, progress, status, statusColor, icon, ic
       <div className={`${iconBg} w-10 h-10 rounded-xl flex items-center justify-center`}>
         <span className={`material-symbols-outlined ${iconColor} text-xl`}>{icon}</span>
       </div>
-      <span className={`px-2 py-0.5 text-[8px] font-black rounded-full border border-white/5 ${
-        statusColor === 'emerald' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-      }`}>
+      <span className={`px-2 py-0.5 text-[8px] font-black rounded-full border border-white/5 ${statusColor === 'emerald' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+        }`}>
         {status}
       </span>
     </div>
@@ -491,18 +399,18 @@ const RecentProjectCard = ({ name, desc, progress, status, statusColor, icon, ic
       <p className="text-[10px] text-gray-400 font-bold mt-1 line-clamp-1">{desc}</p>
     </div>
     <div className="flex items-center justify-between">
-       <div className="flex -space-x-1.5">
-          <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/10" alt="" />
-          <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/20" alt="" />
-          <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/30" alt="" />
-       </div>
-       <div className="relative w-8 h-8 flex items-center justify-center">
-          <svg className="w-full h-full -rotate-90">
-             <circle className="text-gray-100 dark:text-white/5" cx="50%" cy="50%" r="40%" fill="transparent" stroke="currentColor" strokeWidth="2"></circle>
-             <circle className="text-blue-500" cx="50%" cy="50%" r="40%" fill="transparent" stroke="currentColor" strokeWidth="2" strokeDasharray="100" strokeDashoffset={100 - progress}></circle>
-          </svg>
-          <span className="absolute text-[7px] font-black text-gray-900 dark:text-white">{progress}%</span>
-       </div>
+      <div className="flex -space-x-1.5">
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/10" alt="" />
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/20" alt="" />
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/30" alt="" />
+      </div>
+      <div className="relative w-8 h-8 flex items-center justify-center">
+        <svg className="w-full h-full -rotate-90">
+          <circle className="text-gray-100 dark:text-white/5" cx="50%" cy="50%" r="40%" fill="transparent" stroke="currentColor" strokeWidth="2"></circle>
+          <circle className="text-blue-500" cx="50%" cy="50%" r="40%" fill="transparent" stroke="currentColor" strokeWidth="2" strokeDasharray="100" strokeDashoffset={100 - progress}></circle>
+        </svg>
+        <span className="absolute text-[7px] font-black text-gray-900 dark:text-white">{progress}%</span>
+      </div>
     </div>
   </div>
 );
@@ -513,14 +421,13 @@ const ProjectCard = ({ project }) => (
       <div className={`${project.iconBg} w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center shrink-0`}>
         <span className={`material-symbols-outlined ${project.iconColor} text-2xl`}>{project.icon}</span>
       </div>
-      <span className={`px-3 py-1 text-[9px] font-black rounded-full uppercase tracking-widest border border-white/5 ${
-        project.statusColor === 'emerald' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 
-        project.statusColor === 'amber' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-gray-500/10 text-gray-400 border-gray-500/20'
-      }`}>
+      <span className={`px-3 py-1 text-[9px] font-black rounded-full uppercase tracking-widest border border-white/5 ${project.statusColor === 'emerald' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+          project.statusColor === 'amber' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+        }`}>
         {project.status}
       </span>
     </div>
-    
+
     <div>
       <h4 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{project.name}</h4>
       <p className="text-xs text-gray-400 mt-2 font-medium leading-relaxed line-clamp-2">{project.description}</p>
@@ -528,12 +435,12 @@ const ProjectCard = ({ project }) => (
 
     <div className="space-y-3">
       <div className="flex justify-between items-center text-[10px] font-black text-gray-400 uppercase tracking-widest">
-         <span>{project.progressLabel}</span>
-         <span className="text-gray-900 dark:text-white">{project.progress}%</span>
+        <span>{project.progressLabel}</span>
+        <span className="text-gray-900 dark:text-white">{project.progress}%</span>
       </div>
       <div className="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${project.iconColor.replace('text', 'bg')} rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.3)]`} 
+        <div
+          className={`h-full ${project.iconColor.replace('text', 'bg')} rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.3)]`}
           style={{ width: `${project.progress}%` }}
         ></div>
       </div>
@@ -563,95 +470,66 @@ const LargeProjectCard = ({ project }) => (
     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
     <div className="flex-1 space-y-6 md:space-y-8 z-10 w-full">
-       <div className="flex items-center gap-4">
-          <div className={`${project.iconBg} w-14 h-14 rounded-xl flex items-center justify-center shrink-0`}>
-             <span className={`material-symbols-outlined ${project.iconColor} text-3xl`}>{project.icon}</span>
-          </div>
-          <span className={`px-4 py-1.5 text-[10px] font-black rounded-full uppercase tracking-[0.2em] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20`}>
-            {project.status}
-          </span>
-       </div>
+      <div className="flex items-center gap-4">
+        <div className={`${project.iconBg} w-14 h-14 rounded-xl flex items-center justify-center shrink-0`}>
+          <span className={`material-symbols-outlined ${project.iconColor} text-3xl`}>{project.icon}</span>
+        </div>
+        <span className={`px-4 py-1.5 text-[10px] font-black rounded-full uppercase tracking-[0.2em] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20`}>
+          {project.status}
+        </span>
+      </div>
 
-       <div>
-         <h4 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">{project.name}</h4>
-         <p className="text-sm text-gray-400 mt-4 leading-relaxed font-medium">{project.description}</p>
-       </div>
+      <div>
+        <h4 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">{project.name}</h4>
+        <p className="text-sm text-gray-400 mt-4 leading-relaxed font-medium">{project.description}</p>
+      </div>
 
-       <div className="grid grid-cols-2 gap-6 md:gap-10 pt-4">
-          <div>
-             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Team Size</p>
-             <p className="text-base md:text-lg font-bold text-gray-900 dark:text-white">{project.membersCount} Leads</p>
-          </div>
-          <div>
-             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Due Date</p>
-             <p className="text-base md:text-lg font-bold text-gray-900 dark:text-white">{project.dueDate}</p>
-          </div>
-       </div>
+      <div className="grid grid-cols-2 gap-6 md:gap-10 pt-4">
+        <div>
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Team Size</p>
+          <p className="text-base md:text-lg font-bold text-gray-900 dark:text-white">{project.membersCount} Leads</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Due Date</p>
+          <p className="text-base md:text-lg font-bold text-gray-900 dark:text-white">{project.dueDate}</p>
+        </div>
+      </div>
     </div>
 
     <div className="relative w-48 h-48 md:w-56 md:h-56 flex flex-col items-center justify-center z-10 shrink-0">
-       <svg className="w-full h-full -rotate-90">
-         <circle className="text-gray-100 dark:text-white/5" cx="50%" cy="50%" fill="transparent" r="42%" stroke="currentColor" strokeWidth="12"></circle>
-         <circle 
-           className="text-blue-600/20" 
-           cx="50%" cy="50%" 
-           fill="transparent" 
-           r="42%" 
-           stroke="currentColor" 
-           strokeWidth="12"
-         ></circle>
-         <circle 
-           className="text-blue-600 drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]" 
-           cx="50%" cy="50%" 
-           fill="transparent" 
-           r="42%" 
-           stroke="currentColor" 
-           strokeWidth="12"
-           strokeDasharray="596.6" 
-           strokeDashoffset={596.6 - (596.6 * project.progress) / 100}
-           strokeLinecap="round"
-           style={{ strokeDasharray: '264', strokeDashoffset: 264 - (264 * project.progress) / 100 }}
-         ></circle>
-       </svg>
-       <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white">{project.progress}%</span>
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Done</span>
-       </div>
-       <div className={`mt-4 md:mt-6 flex items-center gap-2 text-[11px] font-black ${project.indicatorColor}`}>
-          <span className="material-symbols-outlined text-sm">{project.indicatorIcon}</span>
-          {project.indicator}
-       </div>
+      <svg className="w-full h-full -rotate-90">
+        <circle className="text-gray-100 dark:text-white/5" cx="50%" cy="50%" fill="transparent" r="42%" stroke="currentColor" strokeWidth="12"></circle>
+        <circle
+          className="text-blue-600/20"
+          cx="50%" cy="50%"
+          fill="transparent"
+          r="42%"
+          stroke="currentColor"
+          strokeWidth="12"
+        ></circle>
+        <circle
+          className="text-blue-600 drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+          cx="50%" cy="50%"
+          fill="transparent"
+          r="42%"
+          stroke="currentColor"
+          strokeWidth="12"
+          strokeDasharray="596.6"
+          strokeDashoffset={596.6 - (596.6 * project.progress) / 100}
+          strokeLinecap="round"
+          style={{ strokeDasharray: '264', strokeDashoffset: 264 - (264 * project.progress) / 100 }}
+        ></circle>
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white">{project.progress}%</span>
+        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Done</span>
+      </div>
+      <div className={`mt-4 md:mt-6 flex items-center gap-2 text-[11px] font-black ${project.indicatorColor}`}>
+        <span className="material-symbols-outlined text-sm">{project.indicatorIcon}</span>
+        {project.indicator}
+      </div>
     </div>
   </div>
-);
-
-const NavItem = ({ icon, label, active = false, onClick }) => (
-  <button 
-    onClick={onClick}
-    className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 ${
-      active 
-        ? "bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white shadow-sm" 
-        : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
-    }`}
-  >
-    <span className={`material-symbols-outlined text-xl ${active ? "text-primary-brand" : ""}`}>{icon}</span>
-    <span className={`text-sm font-bold tracking-tight ${active ? "font-black" : ""}`}>{label}</span>
-  </button>
-);
-
-const IconButton = ({ icon, badge = false, className = "", onClick }) => (
-  <button 
-    onClick={onClick}
-    className={`w-10 h-10 flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all duration-300 relative group shrink-0 ${className}`}
-  >
-    <span className="material-symbols-outlined text-xl group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{icon}</span>
-    {badge && (
-      <span className="absolute top-2.5 right-2.5 flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 border border-white dark:border-[#0b0a19]"></span>
-      </span>
-    )}
-  </button>
 );
 
 export default Dashboard;
