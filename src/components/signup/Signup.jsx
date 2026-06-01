@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, ChevronRight, ChevronLeft, Briefcase, User, GraduationCap, Heart, CheckCircle2, ChevronDown } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -12,22 +12,34 @@ const countries = {
 };
 
 const Signup = () => {
+  const [searchParams] = useSearchParams();
+  const isInvited = !!searchParams.get("token") || !!sessionStorage.getItem("inviteToken");
+  
   const [step, setStep] = useState(0);
   const [formdata, setFormdata] = useState({
-    email: "",
+    email: searchParams.get("email") || "",
+    fullName: "",
     password: "",
-    organizationName: "",
-    country: "",
-    state: "",
+    organizationName: searchParams.get("workspace") || "Invited Workspace",
+    country: "India",
+    state: "Delhi",
     phoneNumber: "",
     onboarding: {
-      purpose: "",
-      role: "",
-      teamSize: "",
-      companySize: "",
-      firstManagementArea: ""
+      purpose: "WORK",
+      role: "Other",
+      teamSize: "2-10",
+      companySize: "1-19",
+      firstManagementArea: "Other"
     }
   });
+
+  React.useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      sessionStorage.setItem("inviteToken", token);
+    }
+  }, [searchParams]);
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,6 +51,9 @@ const Signup = () => {
       case "email":
         if (!value) error = "Email is required";
         else if (!/\S+@\S+\.\S+/.test(value)) error = "Invalid email format";
+        break;
+      case "fullName":
+        if (!value.trim()) error = "Full name is required";
         break;
       case "password":
         if (!value) error = "Password is required";
@@ -84,7 +99,11 @@ const Signup = () => {
   const nextStep = () => {
     if (step === 0) {
       const newErrors = {};
-      ["email", "password", "organizationName", "country", "state"].forEach(field => {
+      const fieldsToValidate = isInvited 
+        ? ["email", "fullName", "password"] 
+        : ["email", "fullName", "password", "organizationName", "country", "state"];
+
+      fieldsToValidate.forEach(field => {
         const error = validateField(field, formdata[field]);
         if (error) newErrors[field] = error;
       });
@@ -110,7 +129,16 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!formdata.onboarding.firstManagementArea) {
+    if (isInvited) {
+      // Validate fullName and password
+      const nameError = validateField("fullName", formdata.fullName);
+      const passError = validateField("password", formdata.password);
+      if (nameError || passError) {
+        setErrors({ fullName: nameError, password: passError });
+        toast.error(nameError || passError);
+        return;
+      }
+    } else if (!formdata.onboarding.firstManagementArea) {
       toast.error("Please select what you'd like to manage first");
       return;
     }
@@ -143,8 +171,12 @@ const Signup = () => {
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             <div className="space-y-2 mb-2">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">What are your account and organization details?</h2>
-              <p className="text-gray-500 dark:text-gray-400">Tell us a bit about you and your organization</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {isInvited ? "Set Up Your Profile Password" : "What are your account and organization details?"}
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                {isInvited ? `Complete your registration to join ${searchParams.get("workspace") || "the workspace"}` : "Tell us a bit about you and your organization"}
+              </p>
             </div>
             
             <div className="space-y-4">
@@ -155,7 +187,8 @@ const Signup = () => {
                   name="email"
                   placeholder="name@company.com"
                   value={formdata.email}
-                  className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all ${
+                  disabled={isInvited}
+                  className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all disabled:opacity-75 ${
                     errors.email ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
                   }`}
                   onChange={handlchange}
@@ -165,78 +198,98 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">What is your organization's name?</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">What's your full name?</label>
                 <input
                   type="text"
-                  name="organizationName"
-                  placeholder="Organization Name"
-                  value={formdata.organizationName}
+                  name="fullName"
+                  placeholder="John Doe"
+                  value={formdata.fullName}
                   className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all ${
-                    errors.organizationName ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
+                    errors.fullName ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
                   }`}
                   onChange={handlchange}
                   required
                 />
-                {errors.organizationName && <p className="text-xs text-red-500 ml-1">{errors.organizationName}</p>}
+                {errors.fullName && <p className="text-xs text-red-500 ml-1">{errors.fullName}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Where are you located?</label>
-                  <div className="relative">
-                    <select
-                      name="country"
-                      value={formdata.country}
-                      className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all appearance-none pr-10 ${
-                        errors.country ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
+              {!isInvited && (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">What is your organization's name?</label>
+                    <input
+                      type="text"
+                      name="organizationName"
+                      placeholder="Organization Name"
+                      value={formdata.organizationName}
+                      className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all ${
+                        errors.organizationName ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
                       }`}
                       onChange={handlchange}
                       required
-                    >
-                      <option value="">Select Country</option>
-                      {Object.keys(countries).map(c => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                    />
+                    {errors.organizationName && <p className="text-xs text-red-500 ml-1">{errors.organizationName}</p>}
                   </div>
-                  {errors.country && <p className="text-xs text-red-500 ml-1">{errors.country}</p>}
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Select your state</label>
-                  <div className="relative">
-                    <select
-                      name="state"
-                      value={formdata.state}
-                      disabled={!formdata.country}
-                      className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all appearance-none pr-10 disabled:opacity-50 ${
-                        errors.state ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
-                      }`}
-                      onChange={handlchange}
-                      required
-                    >
-                      <option value="">Select State</option>
-                      {formdata.country && countries[formdata.country].map(s => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-                  </div>
-                  {errors.state && <p className="text-xs text-red-500 ml-1">{errors.state}</p>}
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Phone number (Optional)</label>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  placeholder="+1 234 567 890"
-                  value={formdata.phoneNumber}
-                  className="w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                  onChange={handlchange}
-                />
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Where are you located?</label>
+                      <div className="relative">
+                        <select
+                          name="country"
+                          value={formdata.country}
+                          className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all appearance-none pr-10 ${
+                            errors.country ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
+                          }`}
+                          onChange={handlchange}
+                          required
+                        >
+                          <option value="">Select Country</option>
+                          {Object.keys(countries).map(c => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                      </div>
+                      {errors.country && <p className="text-xs text-red-500 ml-1">{errors.country}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Select your state</label>
+                      <div className="relative">
+                        <select
+                          name="state"
+                          value={formdata.state}
+                          disabled={!formdata.country}
+                          className={`w-full rounded-xl px-4 py-3 border bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all appearance-none pr-10 disabled:opacity-50 ${
+                            errors.state ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-blue-500/20 focus:border-blue-500'
+                          }`}
+                          onChange={handlchange}
+                          required
+                        >
+                          <option value="">Select State</option>
+                          {formdata.country && countries[formdata.country].map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                      </div>
+                      {errors.state && <p className="text-xs text-red-500 ml-1">{errors.state}</p>}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Phone number (Optional)</label>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      placeholder="+1 234 567 890"
+                      value={formdata.phoneNumber}
+                      className="w-full rounded-xl px-4 py-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                      onChange={handlchange}
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Choose a password</label>
@@ -409,16 +462,18 @@ const Signup = () => {
     <div className="min-h-[90vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl">
         {/* Progress Bar */}
-        <div className="mb-8 flex items-center gap-2 px-2">
-          {[0, 1, 2, 3, 4].map((s) => (
-            <div
-              key={s}
-              className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
-                step >= s ? 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]' : 'bg-gray-200 dark:bg-white/10'
-              }`}
-            />
-          ))}
-        </div>
+        {!isInvited && (
+          <div className="mb-8 flex items-center gap-2 px-2">
+            {[0, 1, 2, 3, 4].map((s) => (
+              <div
+                key={s}
+                className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
+                  step >= s ? 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]' : 'bg-gray-200 dark:bg-white/10'
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Signup Card */}
         <div className="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 dark:border-white/10 p-8 md:p-10 min-h-[500px] flex flex-col">
@@ -438,12 +493,12 @@ const Signup = () => {
             )}
             <button
               disabled={loading}
-              onClick={step === 4 ? handleSubmit : nextStep}
+              onClick={step === 4 || isInvited ? handleSubmit : nextStep}
               className={`py-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 ${
                 step === 0 ? 'w-full' : 'flex-[2]'
               } bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/25`}
             >
-              {loading ? 'Creating...' : step === 4 ? 'Finalize & Register' : 'Continue'}
+              {loading ? 'Creating...' : step === 4 || isInvited ? 'Finalize & Register' : 'Continue'}
             </button>
           </div>
 

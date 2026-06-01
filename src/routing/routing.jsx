@@ -12,6 +12,7 @@ import PricingPage from "../components/pages/landingpage/PricingPage";
 import AboutPage from "../components/pages/landingpage/AboutPage";
 import ContactPage from "../components/pages/landingpage/ContactPage";
 import SetupWorkspace from "../components/workspace/SetupWorkspace";
+import AcceptInvite from "../components/workspace/AcceptInvite";
 
 
 
@@ -75,6 +76,10 @@ export const paths = createBrowserRouter([
                          <SetupWorkspace/>
                      </ProtectedRoute>
                 ),
+            },
+            {
+                path: "/workspace/invite/accept/:token",
+                element: <AcceptInvite />,
             },
         ]
     }

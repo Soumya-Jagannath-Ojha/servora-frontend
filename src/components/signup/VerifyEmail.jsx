@@ -25,7 +25,7 @@ const VerifyEmail = () => {
         setStatus("success");
         setMessage(res.data.message || "Email verified successfully");
 
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       } else {
         setStatus("error");
         setMessage("Email verification failed");

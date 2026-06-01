@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 
 const Login = () => {
+  const [searchParams] = useSearchParams();
   const [formdata, setFormdata] = useState({
-    email: "",
+    email: searchParams.get("email") || "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +42,12 @@ const Login = () => {
         try {
           const userRes = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
           const user = userRes.data?.data?.user;
-          if (user && (!user.company || !user.setupCompleted)) {
+          const inviteToken = sessionStorage.getItem("inviteToken");
+          
+          if (inviteToken) {
+            sessionStorage.removeItem("inviteToken");
+            navigate(`/workspace/invite/accept/${inviteToken}`);
+          } else if (user && (!user.company || (!user.setupCompleted && user.isAdmin))) {
             navigate("/setup-workspace");
           } else {
             navigate("/dashboard");
@@ -57,7 +63,11 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "An error occurred during login");
+      const errMsg = error.response?.data?.message || "An error occurred during login";
+      toast.error(errMsg);
+      if (error.response?.status === 403 || errMsg.toLowerCase().includes("verify")) {
+        navigate(`/check-email/${encodeURIComponent(formdata.email)}`);
+      }
     } finally {
       setLoading(false);
     }
