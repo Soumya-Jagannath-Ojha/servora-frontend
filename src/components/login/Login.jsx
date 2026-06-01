@@ -1,5 +1,7 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/authSlice";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -16,6 +18,7 @@ const Login = () => {
 
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handlchange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +45,9 @@ const Login = () => {
         try {
           const userRes = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
           const user = userRes.data?.data?.user;
+          if (user) {
+            dispatch(setUser(user));
+          }
           const inviteToken = sessionStorage.getItem("inviteToken");
           
           if (inviteToken) {

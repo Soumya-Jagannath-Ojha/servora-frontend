@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, clearAuth } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -123,6 +125,8 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const currentUser = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -133,6 +137,7 @@ const Dashboard = () => {
         const res = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
         const user = res.data?.data?.user;
         if (user) {
+          dispatch(setUser(user));
           if (!user.isEmailVerified) {
             navigate(`/check-email/${encodeURIComponent(user.email)}`);
           } else if (!user.company) {
@@ -146,7 +151,7 @@ const Dashboard = () => {
       }
     };
     checkUserSetupStatus();
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -159,7 +164,7 @@ const Dashboard = () => {
       });
 
       if (res.data.success) {
-        localStorage.removeItem("isAuthenticated");
+        dispatch(clearAuth());
         toast.success(res.data.message || "Logged out successfully!");
         navigate("/");
       } else {
@@ -169,7 +174,7 @@ const Dashboard = () => {
       console.error(error);
       toast.error(error.response?.data?.message || "An error occurred during logout");
       // Fallback: clear flag and redirect anyway if the backend call fails
-      localStorage.removeItem("isAuthenticated");
+      dispatch(clearAuth());
       navigate("/");
     }
   };
@@ -201,7 +206,7 @@ const Dashboard = () => {
           className="p-6 md:p-12 space-y-10 max-w-[1600px] mx-auto animate-fade-in-up shadow-inner dark:shadow-black/20"
         >
           {activeTab === "Dashboard" ? (
-            <MainDashboardView onSeeAllProjects={() => setActiveTab("My Projects")} />
+            <MainDashboardView onSeeAllProjects={() => setActiveTab("My Projects")} currentUser={currentUser} />
           ) : activeTab === "My Projects" ? (
             <MyProjectsView />
           ) : activeTab === "Roles & Permissions" ? (
@@ -223,13 +228,13 @@ const Dashboard = () => {
   );
 };
 
-// --- View: Main Dashboard ---
-
-const MainDashboardView = ({ onSeeAllProjects }) => (
-  <div className="space-y-10">
-    {/* Welcome Header */}
-    <div className="space-y-4">
-      <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Welcome back, Alex!</h2>
+const MainDashboardView = ({ onSeeAllProjects, currentUser }) => {
+  const displayName = currentUser?.fullName?.split(" ")[0] || currentUser?.username || "Alex";
+  return (
+    <div className="space-y-10">
+      {/* Welcome Header */}
+      <div className="space-y-4">
+        <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Welcome back, {displayName}!</h2>
       <div className="flex items-center gap-3 bg-blue-500/5 border border-blue-500/10 p-4 rounded-2xl w-fit">
         <span className="material-symbols-outlined text-blue-500">info</span>
         <p className="text-sm font-medium text-blue-600 dark:text-blue-400">You have 12 active tasks across 4 projects today.</p>
@@ -321,8 +326,9 @@ const MainDashboardView = ({ onSeeAllProjects }) => (
         </section>
       </div>
     </div>
-  </div>
-);
+    </div>
+  );
+};
 
 // --- View: My Projects ---
 
@@ -490,9 +496,9 @@ const RecentProjectCard = ({ name, desc, progress, status, statusColor, icon, ic
     </div>
     <div className="flex items-center justify-between">
       <div className="flex -space-x-1.5">
-        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/10" alt="" />
-        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/20" alt="" />
-        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432]" src="https://avatar.iran.liara.run/public/30" alt="" />
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="" />
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432] object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="" />
+        <img className="w-6 h-6 rounded-full border border-white dark:border-[#161432] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="" />
       </div>
       <div className="relative w-8 h-8 flex items-center justify-center">
         <svg className="w-full h-full -rotate-90">

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -17,6 +19,8 @@ import {
 
 const SetupWorkspace = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.user);
   const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   useEffect(() => {
@@ -25,6 +29,7 @@ const SetupWorkspace = () => {
         const res = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
         const user = res.data?.data?.user;
         if (user) {
+          dispatch(setUser(user));
           if (!user.isEmailVerified) {
             navigate(`/check-email/${encodeURIComponent(user.email)}`);
           } else if (!user.isAdmin && user.company) {
@@ -36,7 +41,7 @@ const SetupWorkspace = () => {
       }
     };
     checkUserSetupStatus();
-  }, [navigate, apiUrl]);
+  }, [navigate, apiUrl, dispatch]);
   const [mode, setMode] = useState("choose"); // choose | create | join
   const [step, setStep] = useState(1); // 1: Create Workspace, 2: Invite Teammates, 3: Create Project
   const [loading, setLoading] = useState(false);
