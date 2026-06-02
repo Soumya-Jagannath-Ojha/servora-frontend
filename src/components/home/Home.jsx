@@ -144,32 +144,184 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features section */}
-      <section className="py-20 px-4">
+      {/* Features section – Bento Grid */}
+      <section className="py-24 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Everything you need</h2>
-            <p className="text-gray-500 dark:text-gray-300 max-w-xl mx-auto">Powerful features designed to simplify project monitoring</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Everything you need</h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm sm:text-base">Powerful features designed to simplify project management operations</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { icon: '📊', title: 'Project Monitoring', desc: 'Real-time tracking of project health, milestones, and KPIs.' },
-              { icon: '✅', title: 'Task Management', desc: 'Assign tasks, set priorities, and track progress seamlessly.' },
-              { icon: '📅', title: 'Timeline Planning', desc: 'Visual Gantt charts and deadline tracking for every phase.' },
-              { icon: '📈', title: 'Advanced Analytics', desc: 'Actionable insights into project ROI and team performance.' },
-              { icon: '🔗', title: 'Smart Integrations', desc: 'Connect with your existing project tools and workflows.' },
-              { icon: '🔒', title: 'Secure Data', desc: 'Enterprise-grade security for your sensitive project data.' },
-            ].map((feature, i) => (
-              <div
-                key={feature.title}
-                className="bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200/80 dark:border-white/10 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="text-2xl mb-3">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                <p className="text-gray-500 dark:text-gray-300 text-sm leading-relaxed">{feature.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
+
+            {/* Card 1: Real-time tracking (3 cols) */}
+            <div className="md:col-span-3 bg-white border border-gray-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden relative min-h-[380px]">
+              <div className="relative flex justify-between items-center gap-4 py-8 px-2 w-full">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="conn-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.5" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 80,80 C 140,30 190,130 250,80" stroke="url(#conn-grad)" strokeWidth="1.5" strokeDasharray="5 4" fill="none"/>
+                </svg>
+                {/* Terminal card */}
+                <div className="w-[38%] bg-gray-50 rounded-2xl p-4 border border-gray-200 shadow-md text-[9px] font-mono space-y-1.5 z-10 shrink-0">
+                  <div className="text-blue-600">$ pmms track --live</div>
+                  <div className="text-gray-400">● Fetching updates...</div>
+                  <div className="text-emerald-600">✓ 12 tasks synced</div>
+                </div>
+                {/* Center icon */}
+                <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 z-10 shrink-0">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                {/* Status card */}
+                <div className="w-[38%] bg-gray-50 rounded-2xl p-4 border border-gray-200 shadow-md text-[9px] font-bold text-gray-700 flex flex-col items-center justify-center gap-1.5 z-10 text-center shrink-0">
+                  <span className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </span>
+                  <span className="text-[8px] text-gray-500 font-semibold mt-0.5">All systems live ✨</span>
+                </div>
               </div>
-            ))}
+              <div className="space-y-2 mt-auto">
+                <h3 className="text-lg font-bold text-gray-900">Real-time tracking</h3>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-sm">
+                  Monitor project progress and team activity live — no refresh needed.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Smart workflow (2 cols) */}
+            <div className="md:col-span-2 bg-white border border-gray-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden min-h-[380px]">
+              <div className="space-y-2 shrink-0">
+                <h3 className="text-lg font-bold text-gray-900">Smart workflow</h3>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                  Automate repetitive steps and keep your team focused on what matters.
+                </p>
+              </div>
+              {/* Mock Dashboard preview */}
+              <div className="mt-6 -mb-12 overflow-hidden rounded-t-2xl border border-gray-200 shadow-xl bg-gray-50 p-4 space-y-3 w-[112%] -mr-4 flex-1">
+                <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-400" />
+                    <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                    <div className="w-2 h-2 rounded-full bg-green-400" />
+                  </div>
+                  <div className="h-1.5 w-16 bg-gray-200 rounded-full" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 w-2/5 bg-blue-100 rounded" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="h-10 bg-white rounded-lg border border-gray-200 shadow-sm" />
+                    <div className="h-10 bg-white rounded-lg border border-gray-200 shadow-sm" />
+                  </div>
+                  <div className="h-12 bg-white rounded-lg border border-gray-200 shadow-sm" />
+                  <div className="h-8 bg-blue-500/10 rounded-lg border border-blue-100" />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Global edge hosting (2 cols) */}
+            <div className="md:col-span-2 bg-white border border-gray-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative min-h-[380px]">
+              <div className="space-y-2 z-10 shrink-0">
+                <h3 className="text-lg font-bold text-gray-900">Global edge hosting</h3>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                  Your PMMS data stays fast and available — hosted across the globe.
+                </p>
+              </div>
+              {/* Dark Globe */}
+              <div className="relative flex-1 flex items-end justify-center overflow-hidden -mb-8 mt-4">
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
+                <svg viewBox="0 0 200 200" className="w-52 h-52 relative z-10" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="globe-grad" cx="40%" cy="35%" r="65%">
+                      <stop offset="0%" stopColor="#334155" />
+                      <stop offset="100%" stopColor="#0f172a" />
+                    </radialGradient>
+                    <radialGradient id="globe-shine" cx="35%" cy="30%" r="50%">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.08" />
+                      <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                    </radialGradient>
+                    <clipPath id="globe-clip">
+                      <circle cx="100" cy="100" r="80" />
+                    </clipPath>
+                  </defs>
+                  <circle cx="100" cy="100" r="80" fill="url(#globe-grad)" />
+                  <g clipPath="url(#globe-clip)" stroke="#3b82f6" strokeWidth="0.6" fill="none" opacity="0.35">
+                    <ellipse cx="100" cy="100" rx="80" ry="20" />
+                    <ellipse cx="100" cy="100" rx="80" ry="42" />
+                    <ellipse cx="100" cy="100" rx="80" ry="62" />
+                    <ellipse cx="100" cy="100" rx="80" ry="75" />
+                  </g>
+                  <g clipPath="url(#globe-clip)" stroke="#3b82f6" strokeWidth="0.6" fill="none" opacity="0.35">
+                    <line x1="100" y1="20" x2="100" y2="180" />
+                    <path d="M100,20 Q140,100 100,180" />
+                    <path d="M100,20 Q60,100 100,180" />
+                    <path d="M100,20 Q155,100 100,180" />
+                    <path d="M100,20 Q45,100 100,180" />
+                  </g>
+                  <circle cx="100" cy="100" r="80" fill="url(#globe-shine)" />
+                  {[
+                    [72, 68], [115, 72], [88, 95], [130, 88],
+                    [60, 110], [148, 105], [100, 120], [78, 130],
+                    [122, 52], [55, 85]
+                  ].map(([cx, cy], i) => (
+                    <g key={i}>
+                      <circle cx={cx} cy={cy} r="3" fill="#3b82f6" opacity="0.9" />
+                      <circle cx={cx} cy={cy} r="6" fill="#3b82f6" opacity="0.15" />
+                    </g>
+                  ))}
+                  <g stroke="#60a5fa" strokeWidth="0.5" opacity="0.3" clipPath="url(#globe-clip)">
+                    <line x1="72" y1="68" x2="115" y2="72" />
+                    <line x1="115" y1="72" x2="130" y2="88" />
+                    <line x1="88" y1="95" x2="60" y2="110" />
+                    <line x1="130" y1="88" x2="148" y2="105" />
+                    <line x1="100" y1="120" x2="78" y2="130" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            {/* Card 4: Insightful reports (3 cols) */}
+            <div className="md:col-span-3 bg-white border border-gray-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative min-h-[380px]">
+              <div className="space-y-2 shrink-0">
+                <h3 className="text-lg font-bold text-gray-900">Insightful reports</h3>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-sm">
+                  Generate detailed reports on project performance, team productivity, and budget usage.
+                </p>
+              </div>
+              <div className="mt-6 -mb-12 overflow-hidden rounded-t-2xl border border-gray-200 shadow-xl bg-gray-50 p-5 space-y-3 w-[110%] -mr-4 flex-1">
+                <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-400" />
+                    <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                    <div className="w-2 h-2 rounded-full bg-green-400" />
+                  </div>
+                  <div className="h-1.5 w-20 bg-gray-200 rounded-full" />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: 'Active Projects', val: '24', color: 'bg-blue-500/10', bar: 'bg-blue-500' },
+                    { label: 'Team Members', val: '87', color: 'bg-indigo-500/10', bar: 'bg-indigo-500' },
+                    { label: 'Tasks Done', val: '312', color: 'bg-emerald-500/10', bar: 'bg-emerald-500' },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded-xl border border-gray-200 bg-white p-3 flex flex-col justify-between h-24 shadow-sm">
+                      <div className="h-2 w-3/4 bg-gray-100 rounded" />
+                      <div>
+                        <div className={`h-1.5 w-full rounded-full ${s.color} overflow-hidden`}>
+                          <div className={`h-full rounded-full ${s.bar}`} style={{ width: '65%' }} />
+                        </div>
+                        <p className="text-[10px] font-bold text-gray-700 mt-1">{s.val}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

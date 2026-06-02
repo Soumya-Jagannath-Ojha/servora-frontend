@@ -13,6 +13,7 @@ import AboutPage from "../components/pages/landingpage/AboutPage";
 import ContactPage from "../components/pages/landingpage/ContactPage";
 import SetupWorkspace from "../components/workspace/SetupWorkspace";
 import AcceptInvite from "../components/workspace/AcceptInvite";
+import NotFoundPage from "../components/pages/NotFoundPage";
 
 
 
@@ -80,6 +81,10 @@ export const paths = createBrowserRouter([
             {
                 path: "/workspace/invite/accept/:token",
                 element: <AcceptInvite />,
+            },
+            {
+                path: "*",
+                element: <NotFoundPage />,
             },
         ]
     }
