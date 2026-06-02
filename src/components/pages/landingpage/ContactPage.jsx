@@ -10,7 +10,7 @@ function ContactPage() {
   }
 
   const contactMethods = [
-    { icon: '📧', label: 'Email', value: 'hello@hrms.io' },
+    { icon: '📧', label: 'Email', value: 'hello@pmms.io' },
     { icon: '📞', label: 'Phone', value: '+1 (555) 123-4567' },
     { icon: '📍', label: 'Office', value: '123 Innovation Blvd, San Francisco' },
   ]
