@@ -187,17 +187,17 @@ const RolesPermissionsView = () => {
                     {role.name}
                   </span>
                   {!role.isSystemRole && (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                       <button 
                         onClick={() => handleOpenEditModal(role)}
-                        className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        className="w-8 h-8 shrink-0 aspect-square flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors"
                         title="Edit Role"
                       >
                         <span className="material-symbols-outlined text-base">edit</span>
                       </button>
                       <button 
                         onClick={() => handleDeleteRole(role._id)}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        className="w-8 h-8 shrink-0 aspect-square flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors"
                         title="Delete Role"
                       >
                         <span className="material-symbols-outlined text-base">delete</span>
@@ -301,7 +301,7 @@ const RolesPermissionsView = () => {
               </h3>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all"
+                className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-100   rounded-full transition-all"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>

@@ -419,8 +419,8 @@ const CompaniesListView = () => {
       {/* Create Company Modal */}
       {createModalOpen && createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl p-8 space-y-6 animate-scale-in">
-            <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-4">
+          <div className="w-full max-w-lg bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl p-8 space-y-6 max-h-[90vh] flex flex-col animate-scale-in">
+            <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-4 shrink-0">
               <h3 className="text-xl font-black text-gray-900 dark:text-white">Register New Company</h3>
               <button 
                 onClick={() => setCreateModalOpen(false)}
@@ -430,77 +430,79 @@ const CompaniesListView = () => {
               </button>
             </div>
 
-            <form onSubmit={handleCreateCompany} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Name</label>
-                <input 
-                  type="text" 
-                  value={newCompanyName}
-                  onChange={(e) => setNewCompanyName(e.target.value)}
-                  placeholder="e.g. Acme Industries"
-                  required
-                  className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Email</label>
-                <input 
-                  type="email" 
-                  value={newCompanyEmail}
-                  onChange={(e) => setNewCompanyEmail(e.target.value)}
-                  placeholder="e.g. contact@acme.com"
-                  required
-                  className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Slug (Optional)</label>
-                <input 
-                  type="text" 
-                  value={newCompanySlug}
-                  onChange={(e) => setNewCompanySlug(e.target.value)}
-                  placeholder="e.g. acme-industries"
-                  className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
-                />
-              </div>
-
-               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Logo</label>
-                <div className="flex items-center gap-4">
-                  {newCompanyLogoUrl && (
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                      <img 
-                        src={newCompanyLogoUrl.startsWith("http") ? newCompanyLogoUrl : `${apiUrl}${newCompanyLogoUrl}`} 
-                        alt="Preview" 
-                        className="w-full h-full object-cover" 
-                      />
-                    </div>
-                  )}
+            <form onSubmit={handleCreateCompany} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              <div className="flex-1 overflow-y-auto pr-2 space-y-5 custom-scrollbar min-h-0">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Name</label>
                   <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleLogoUpload(e.target.files[0], false)}
-                    className="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-blue-500/10 file:text-blue-500 hover:file:bg-blue-500/20 file:cursor-pointer"
+                    type="text" 
+                    value={newCompanyName}
+                    onChange={(e) => setNewCompanyName(e.target.value)}
+                    placeholder="e.g. Acme Industries"
+                    required
+                    className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Email</label>
+                  <input 
+                    type="email" 
+                    value={newCompanyEmail}
+                    onChange={(e) => setNewCompanyEmail(e.target.value)}
+                    placeholder="e.g. contact@acme.com"
+                    required
+                    className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Slug (Optional)</label>
+                  <input 
+                    type="text" 
+                    value={newCompanySlug}
+                    onChange={(e) => setNewCompanySlug(e.target.value)}
+                    placeholder="e.g. acme-industries"
+                    className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white dark:placeholder-gray-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Logo</label>
+                  <div className="flex items-center gap-4">
+                    {newCompanyLogoUrl && (
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                        <img 
+                          src={newCompanyLogoUrl.startsWith("http") ? newCompanyLogoUrl : `${apiUrl}${newCompanyLogoUrl}`} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover" 
+                        />
+                      </div>
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => handleLogoUpload(e.target.files[0], false)}
+                      className="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-blue-500/10 file:text-blue-500 hover:file:bg-blue-500/20 file:cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan</label>
+                  <select 
+                    value={newCompanyPlan}
+                    onChange={(e) => setNewCompanyPlan(e.target.value)}
+                    className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                  >
+                    <option value="free" className="bg-white dark:bg-[#161432]">Free</option>
+                    <option value="pro" className="bg-white dark:bg-[#161432]">Pro</option>
+                    <option value="enterprise" className="bg-white dark:bg-[#161432]">Enterprise</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan</label>
-                <select 
-                  value={newCompanyPlan}
-                  onChange={(e) => setNewCompanyPlan(e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                >
-                  <option value="free" className="bg-white dark:bg-[#161432]">Free</option>
-                  <option value="pro" className="bg-white dark:bg-[#161432]">Pro</option>
-                  <option value="enterprise" className="bg-white dark:bg-[#161432]">Enterprise</option>
-                </select>
-              </div>
-
-              <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
+              <div className="flex gap-4 pt-4 mt-4 border-t border-gray-100 dark:border-white/5 shrink-0">
                 <button 
                   type="button"
                   onClick={() => setCreateModalOpen(false)}
@@ -524,8 +526,8 @@ const CompaniesListView = () => {
       {/* Edit Company Modal */}
       {editModalOpen && selectedCompany && createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl p-8 space-y-6 my-8 animate-scale-in">
-            <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-4">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl p-8 space-y-6 my-8 max-h-[90vh] flex flex-col animate-scale-in">
+            <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-4 shrink-0">
               <div>
                 <h3 className="text-xl font-black text-gray-900 dark:text-white">Edit Company Details</h3>
                 <p className="text-[10px] text-gray-400 font-bold mt-0.5">ID: {selectedCompany._id}</p>
@@ -538,195 +540,199 @@ const CompaniesListView = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUpdateCompanyDetails} className="space-y-6">
-              {/* 2 Column Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                
-                {/* Core Details */}
-                <div className="space-y-5">
-                  <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">Core Identity</h4>
-
-                  {/* Logo Display */}
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                     <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-tr from-blue-500 to-indigo-600 text-white font-black flex items-center justify-center text-xl shadow-md shrink-0">
-                      {editCompanyLogoUrl ? (
-                        <img 
-                          src={editCompanyLogoUrl.startsWith("http") ? editCompanyLogoUrl : `${apiUrl}${editCompanyLogoUrl}`} 
-                          alt="Logo" 
-                          className="w-full h-full object-cover" 
-                        />
-                      ) : (
-                        editCompanyName.charAt(0).toUpperCase()
-                      )}
-                    </div>
-                    <div>
-                      <h5 className="text-xs font-bold text-gray-900 dark:text-white">Company Logo</h5>
-                      <p className="text-[10px] text-gray-400 mt-1">
-                        {editCompanyLogoUrl ? "Logo updated." : "No logo uploaded."}
-                      </p>
-                    </div>
-                  </div>
+            <form onSubmit={handleUpdateCompanyDetails} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              {/* Scrollable container for fields */}
+              <div className="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar min-h-0">
+                {/* 2 Column Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Name</label>
-                    <input 
-                      type="text" 
-                      value={editCompanyName}
-                      onChange={(e) => setEditCompanyName(e.target.value)}
-                      required
-                      className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                    />
-                  </div>
+                  {/* Core Identity Details */}
+                  <div className="space-y-5">
+                    <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">Core Identity</h4>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Email</label>
-                    <input 
-                      type="email" 
-                      value={editCompanyEmail}
-                      onChange={(e) => setEditCompanyEmail(e.target.value)}
-                      required
-                      className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Slug</label>
-                    <input 
-                      type="text" 
-                      value={editCompanySlug}
-                      onChange={(e) => setEditCompanySlug(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                    />
-                  </div>
-
-                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Upload Logo</label>
-                    <input 
-                      type="file" 
-                      accept="image/*"
-                      onChange={(e) => handleLogoUpload(e.target.files[0], true)}
-                      className="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-blue-500/10 file:text-blue-500 hover:file:bg-blue-500/20 file:cursor-pointer"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan</label>
-                      <select 
-                        value={editCompanyPlan}
-                        onChange={(e) => setEditCompanyPlan(e.target.value)}
-                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                      >
-                        <option value="free" className="bg-white dark:bg-[#161432]">Free</option>
-                        <option value="pro" className="bg-white dark:bg-[#161432]">Pro</option>
-                        <option value="enterprise" className="bg-white dark:bg-[#161432]">Enterprise</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</label>
-                      <select 
-                        value={editCompanyIsActive ? "true" : "false"}
-                        onChange={(e) => setEditCompanyIsActive(e.target.value === "true")}
-                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                      >
-                        <option value="true" className="bg-white dark:bg-[#161432]">Active</option>
-                        <option value="false" className="bg-white dark:bg-[#161432]">Suspended</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Settings & Invite Details */}
-                <div className="space-y-5">
-                  <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">Workspace Settings</h4>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Timezone</label>
-                    <input 
-                      type="text" 
-                      value={editCompanyTimezone}
-                      onChange={(e) => setEditCompanyTimezone(e.target.value)}
-                      placeholder="e.g. Asia/Kolkata"
-                      className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Currency</label>
-                      <input 
-                        type="text" 
-                        value={editCompanyCurrency}
-                        onChange={(e) => setEditCompanyCurrency(e.target.value)}
-                        placeholder="e.g. INR"
-                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Language</label>
-                      <input 
-                        type="text" 
-                        value={editCompanyLanguage}
-                        onChange={(e) => setEditCompanyLanguage(e.target.value)}
-                        placeholder="e.g. en"
-                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Date Format</label>
-                    <select 
-                      value={editCompanyDateFormat}
-                      onChange={(e) => setEditCompanyDateFormat(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
-                    >
-                      <option value="DD/MM/YYYY" className="bg-white dark:bg-[#161432]">DD/MM/YYYY</option>
-                      <option value="MM/DD/YYYY" className="bg-white dark:bg-[#161432]">MM/DD/YYYY</option>
-                      <option value="YYYY-MM-DD" className="bg-white dark:bg-[#161432]">YYYY-MM-DD</option>
-                    </select>
-                  </div>
-
-                  {/* Read Only Stats */}
-                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 space-y-2 text-xs">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-gray-400">Workspace Code:</span>
-                      <span className="font-black text-gray-700 dark:text-white select-all">{selectedCompany.code || "N/A"}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-gray-400">Invite Code:</span>
-                      <div className="flex items-center gap-1">
-                        <span className="font-black text-gray-700 dark:text-white select-all">{selectedCompany.inviteCode || "N/A"}</span>
-                        {selectedCompany.inviteCode && (
-                          <button 
-                            type="button" 
-                            onClick={() => {
-                              navigator.clipboard.writeText(selectedCompany.inviteCode);
-                              toast.success("Invite code copied!");
-                            }}
-                            className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-blue-500"
-                            title="Copy code"
-                          >
-                            <span className="material-symbols-outlined text-[14px]">content_copy</span>
-                          </button>
+                    {/* Logo Display */}
+                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                       <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-tr from-blue-500 to-indigo-600 text-white font-black flex items-center justify-center text-xl shadow-md shrink-0">
+                        {editCompanyLogoUrl ? (
+                          <img 
+                            src={editCompanyLogoUrl.startsWith("http") ? editCompanyLogoUrl : `${apiUrl}${editCompanyLogoUrl}`} 
+                            alt="Logo" 
+                            className="w-full h-full object-cover" 
+                          />
+                        ) : (
+                          editCompanyName.charAt(0).toUpperCase()
                         )}
                       </div>
-                    </div>
-                    {selectedCompany.inviteCodeExpiry && (
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-400">Code Expiry:</span>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
-                          {new Date(selectedCompany.inviteCodeExpiry).toLocaleDateString()}
-                        </span>
+                      <div>
+                        <h5 className="text-xs font-bold text-gray-900 dark:text-white">Company Logo</h5>
+                        <p className="text-[10px] text-gray-400 mt-1">
+                          {editCompanyLogoUrl ? "Logo updated." : "No logo uploaded."}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Name</label>
+                      <input 
+                        type="text" 
+                        value={editCompanyName}
+                        onChange={(e) => setEditCompanyName(e.target.value)}
+                        required
+                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                      />
+                    </div>
 
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Company Email</label>
+                      <input 
+                        type="email" 
+                        value={editCompanyEmail}
+                        onChange={(e) => setEditCompanyEmail(e.target.value)}
+                        required
+                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Slug</label>
+                      <input 
+                        type="text" 
+                        value={editCompanySlug}
+                        onChange={(e) => setEditCompanySlug(e.target.value)}
+                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                      />
+                    </div>
+
+                     <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Upload Logo</label>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => handleLogoUpload(e.target.files[0], true)}
+                        className="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-blue-500/10 file:text-blue-500 hover:file:bg-blue-500/20 file:cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan</label>
+                        <select 
+                          value={editCompanyPlan}
+                          onChange={(e) => setEditCompanyPlan(e.target.value)}
+                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                        >
+                          <option value="free" className="bg-white dark:bg-[#161432]">Free</option>
+                          <option value="pro" className="bg-white dark:bg-[#161432]">Pro</option>
+                          <option value="enterprise" className="bg-white dark:bg-[#161432]">Enterprise</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</label>
+                        <select 
+                          value={editCompanyIsActive ? "true" : "false"}
+                          onChange={(e) => setEditCompanyIsActive(e.target.value === "true")}
+                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                        >
+                          <option value="true" className="bg-white dark:bg-[#161432]">Active</option>
+                          <option value="false" className="bg-white dark:bg-[#161432]">Suspended</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Settings & Invite Details */}
+                  <div className="space-y-5">
+                    <h4 className="text-xs font-black text-blue-500 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-2">Workspace Settings</h4>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Timezone</label>
+                      <input 
+                        type="text" 
+                        value={editCompanyTimezone}
+                        onChange={(e) => setEditCompanyTimezone(e.target.value)}
+                        placeholder="e.g. Asia/Kolkata"
+                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Currency</label>
+                        <input 
+                          type="text" 
+                          value={editCompanyCurrency}
+                          onChange={(e) => setEditCompanyCurrency(e.target.value)}
+                          placeholder="e.g. INR"
+                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Language</label>
+                        <input 
+                          type="text" 
+                          value={editCompanyLanguage}
+                          onChange={(e) => setEditCompanyLanguage(e.target.value)}
+                          placeholder="e.g. en"
+                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Date Format</label>
+                      <select 
+                        value={editCompanyDateFormat}
+                        onChange={(e) => setEditCompanyDateFormat(e.target.value)}
+                        className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500/20 text-xs font-bold transition-all dark:text-white"
+                      >
+                        <option value="DD/MM/YYYY" className="bg-white dark:bg-[#161432]">DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY" className="bg-white dark:bg-[#161432]">MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD" className="bg-white dark:bg-[#161432]">YYYY-MM-DD</option>
+                      </select>
+                    </div>
+
+                    {/* Read Only Stats */}
+                    <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 space-y-2 text-xs">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-gray-400">Workspace Code:</span>
+                        <span className="font-black text-gray-700 dark:text-white select-all">{selectedCompany.code || "N/A"}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-gray-400">Invite Code:</span>
+                        <div className="flex items-center gap-1">
+                          <span className="font-black text-gray-700 dark:text-white select-all">{selectedCompany.inviteCode || "N/A"}</span>
+                          {selectedCompany.inviteCode && (
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                navigator.clipboard.writeText(selectedCompany.inviteCode);
+                                toast.success("Invite code copied!");
+                              }}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-blue-500"
+                              title="Copy code"
+                            >
+                              <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {selectedCompany.inviteCodeExpiry && (
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-gray-400">Code Expiry:</span>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+                            {new Date(selectedCompany.inviteCodeExpiry).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
               </div>
 
-              <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
+              {/* Pinned Footer */}
+              <div className="flex gap-4 pt-4 mt-4 border-t border-gray-100 dark:border-white/5 shrink-0">
                 <button 
                   type="button"
                   onClick={() => setEditModalOpen(false)}

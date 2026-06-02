@@ -13,6 +13,7 @@ import RolesPermissionsView from "./RolesPermissionsView";
 import CompaniesListView from "./CompaniesListView";
 import TeamMembersView from "./TeamMembersView";
 import MyProjectsView from "./MyProjectsView";
+import SettingsView from "./SettingsView";
 import StatCard from "./StatCard";
 import RecentProjectCard from "./RecentProjectCard";
 
@@ -117,6 +118,8 @@ const Dashboard = () => {
             <CompaniesListView />
           ) : activeTab === "Team Members" ? (
             <TeamMembersView />
+          ) : activeTab === "Settings" ? (
+            <SettingsView />
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400">
               <span className="material-symbols-outlined text-6xl mb-4 animate-float">construction</span>
