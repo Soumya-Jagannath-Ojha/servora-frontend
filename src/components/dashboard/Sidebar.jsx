@@ -16,7 +16,15 @@ const NavItem = ({ icon, label, active = false, onClick }) => (
 
 const Sidebar = ({ activeTab, setActiveTab, isSidebarOpen, toggleSidebar }) => {
   return (
-    <aside className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0b0a19] border-r border-gray-100 dark:border-white/5 flex flex-col py-8 px-6 z-[70] transition-all duration-700 transform shadow-2xl shadow-gray-200/50 dark:shadow-black/60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+    <>
+      {/* Backdrop for mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-[60] lg:hidden transition-opacity"
+          onClick={toggleSidebar}
+        />
+      )}
+      <aside className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0b0a19] border-r border-gray-100 dark:border-white/5 flex flex-col py-8 px-6 z-[70] transition-all duration-700 transform shadow-2xl shadow-gray-200/50 dark:shadow-black/60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
       <div className="flex items-center justify-between mb-10 px-2 lg:block">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-accent-brand rounded-lg flex items-center justify-center shadow-accent-brand">
@@ -49,6 +57,7 @@ const Sidebar = ({ activeTab, setActiveTab, isSidebarOpen, toggleSidebar }) => {
         </button>
       </div>
     </aside>
+    </>
   );
 };
 

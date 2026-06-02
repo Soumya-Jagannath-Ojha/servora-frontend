@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Loader2, Plus, Mail, Shield, UserX, UserCheck, RefreshCw, X, ChevronDown } from "lucide-react";
-
+import { formatDate } from "../../utils/date";
+ 
 const TeamMembersView = () => {
   const [activeTab, setActiveTab] = useState("members"); // members | invites
   const [members, setMembers] = useState([]);
   const [invites, setInvites] = useState([]);
+  
+  const dateFormat = useSelector((state) => state.auth.user?.company?.settings?.dateFormat);
   const [loading, setLoading] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
@@ -75,9 +79,17 @@ const TeamMembersView = () => {
 
   useEffect(() => {
     fetchRoles();
+    fetchMembers();
+    fetchInvites();
   }, []);
 
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
   useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
     if (activeTab === "members") {
       fetchMembers();
     } else {
@@ -204,13 +216,6 @@ const TeamMembersView = () => {
         
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setIsWorkspaceModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-bold rounded-2xl transition-all active:scale-95 text-xs uppercase"
-          >
-            <Plus size={14} />
-            <span>Add Workspace</span>
-          </button>
-          <button
             onClick={() => setIsRoleModalOpen(true)}
             className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-bold rounded-2xl transition-all active:scale-95 text-xs uppercase"
           >
@@ -260,111 +265,117 @@ const TeamMembersView = () => {
       </div>
 
       {/* Content */}
-      <div className="glass-card p-6 md:p-8 rounded-[32px] overflow-hidden">
-        {loading && (
+      <div className="glass-card p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[32px] overflow-hidden">
+        {loading && (activeTab === "members" ? members.length === 0 : invites.length === 0) ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <Loader2 className="animate-spin text-blue-500 mb-4" size={36} />
             <p className="text-sm font-bold">Loading records...</p>
           </div>
-        )}
+        ) : (
+          <>
+            {activeTab === "members" && (
+              members.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[700px] text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-gray-100 dark:border-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest pb-4">
+                        <th className="py-4 pl-4 w-12">S.No</th>
+                        <th className="py-4">Name / Username</th>
+                        <th className="py-4">Email</th>
+                        <th className="py-4">Role</th>
+                        <th className="py-4">Joined Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                      {members.map((member, index) => (
+                        <tr key={member._id} className="text-sm group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all">
+                          <td className="py-4 pl-4 text-gray-400 font-bold w-12">{index + 1}</td>
+                          <td className="py-4 pr-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-500 font-bold flex items-center justify-center text-xs border border-blue-500/20">
+                                {member.fullName ? member.fullName.charAt(0).toUpperCase() : member.username?.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="font-bold text-gray-900 dark:text-white">{member.fullName || "N/A"}</p>
+                                <p className="text-[10px] text-gray-400 font-bold">@{member.username}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 text-gray-500 dark:text-gray-300 font-medium">{member.email}</td>
+                          <td className="py-4">
+                            <div className="flex items-center gap-1.5">
+                              <Shield size={14} className={member.isAdmin ? "text-amber-500" : "text-blue-500"} />
+                              <span className={`text-xs font-bold ${member.isAdmin ? "text-amber-500" : "text-blue-500"}`}>
+                                {member.isAdmin ? "Workspace Admin" : "Member"}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 text-gray-400 text-xs font-bold">
+                            {formatDate(member.createdAt, dateFormat)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-16">
+                  <UserX size={48} className="mx-auto text-gray-300 dark:text-white/10 mb-4" />
+                  <h4 className="text-lg font-bold">No active members found</h4>
+                  <p className="text-xs text-gray-400 mt-1">Start by inviting team members to your workspace.</p>
+                </div>
+              )
+            )}
 
-        {!loading && activeTab === "members" && (
-          members.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-100 dark:border-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest pb-4">
-                    <th className="py-4">Name / Username</th>
-                    <th className="py-4">Email</th>
-                    <th className="py-4">Role</th>
-                    <th className="py-4">Joined Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-white/5">
-                  {members.map((member) => (
-                    <tr key={member._id} className="text-sm group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all">
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-blue-500/10 text-blue-500 font-bold flex items-center justify-center text-xs border border-blue-500/20">
-                            {member.fullName ? member.fullName.charAt(0).toUpperCase() : member.username?.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="font-bold text-gray-900 dark:text-white">{member.fullName || "N/A"}</p>
-                            <p className="text-[10px] text-gray-400 font-bold">@{member.username}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 text-gray-500 dark:text-gray-300 font-medium">{member.email}</td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-1.5">
-                          <Shield size={14} className={member.isAdmin ? "text-amber-500" : "text-blue-500"} />
-                          <span className={`text-xs font-bold ${member.isAdmin ? "text-amber-500" : "text-blue-500"}`}>
-                            {member.isAdmin ? "Workspace Admin" : "Member"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 text-gray-400 text-xs font-bold">
-                        {new Date(member.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <UserX size={48} className="mx-auto text-gray-300 dark:text-white/10 mb-4" />
-              <h4 className="text-lg font-bold">No active members found</h4>
-              <p className="text-xs text-gray-400 mt-1">Start by inviting team members to your workspace.</p>
-            </div>
-          )
-        )}
-
-        {!loading && activeTab === "invites" && (
-          invites.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-100 dark:border-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest pb-4">
-                    <th className="py-4">Invitee Email</th>
-                    <th className="py-4">Intended Role</th>
-                    <th className="py-4">Expires At</th>
-                    <th className="py-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-white/5">
-                  {invites.map((invite) => (
-                    <tr key={invite._id} className="text-sm group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all">
-                      <td className="py-4 pr-4 font-bold text-gray-900 dark:text-white">
-                        <div className="flex items-center gap-2">
-                          <Mail size={14} className="text-gray-400" />
-                          <span>{invite.email}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 capitalize font-semibold text-gray-500 dark:text-gray-300">{invite.role}</td>
-                      <td className="py-4 text-gray-400 text-xs font-bold">
-                        {new Date(invite.expiresAt).toLocaleDateString()}
-                      </td>
-                      <td className="py-4 text-right">
-                        <button
-                          onClick={() => handleRevokeInvite(invite._id)}
-                          className="px-3 py-1.5 text-xs font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
-                        >
-                          Revoke Invite
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <UserCheck size={48} className="mx-auto text-gray-300 dark:text-white/10 mb-4" />
-              <h4 className="text-lg font-bold">No pending invites</h4>
-              <p className="text-xs text-gray-400 mt-1 font-semibold">Any pending email invites will appear here.</p>
-            </div>
-          )
+            {activeTab === "invites" && (
+              invites.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[700px] text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-gray-100 dark:border-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest pb-4">
+                        <th className="py-4 pl-4 w-12">S.No</th>
+                        <th className="py-4">Invitee Email</th>
+                        <th className="py-4">Intended Role</th>
+                        <th className="py-4">Expires At</th>
+                        <th className="py-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                      {invites.map((invite, index) => (
+                        <tr key={invite._id} className="text-sm group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all">
+                          <td className="py-4 pl-4 text-gray-400 font-bold w-12">{index + 1}</td>
+                          <td className="py-4 pr-4 font-bold text-gray-900 dark:text-white">
+                            <div className="flex items-center gap-2">
+                              <Mail size={14} className="text-gray-400" />
+                              <span>{invite.email}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 capitalize font-semibold text-gray-500 dark:text-gray-300">{invite.role}</td>
+                          <td className="py-4 text-gray-400 text-xs font-bold">
+                            {formatDate(invite.expiresAt, dateFormat)}
+                          </td>
+                          <td className="py-4 text-right">
+                            <button
+                              onClick={() => handleRevokeInvite(invite._id)}
+                              className="px-3 py-1.5 text-xs font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                            >
+                              Revoke Invite
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-16">
+                  <UserCheck size={48} className="mx-auto text-gray-300 dark:text-white/10 mb-4" />
+                  <h4 className="text-lg font-bold">No pending invites</h4>
+                  <p className="text-xs text-gray-400 mt-1 font-semibold">Any pending email invites will appear here.</p>
+                </div>
+              )
+            )}
+          </>
         )}
       </div>
 

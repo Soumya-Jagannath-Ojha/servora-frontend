@@ -15,6 +15,7 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
   });
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [errors, setErrors] = useState({});
   const fileInputRef = React.useRef(null);
   const dispatch = useDispatch();
 
@@ -26,6 +27,7 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
         country: currentUser.country || "",
         state: currentUser.state || "",
       });
+      setErrors({});
     }
   }, [currentUser, isOpen]);
 
@@ -33,7 +35,15 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "phoneNumber") {
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      if (numericValue.length >= 10 || !numericValue) {
+        setErrors((prev) => ({ ...prev, phoneNumber: null }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleAvatarClick = () => {
@@ -82,6 +92,12 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.phoneNumber && formData.phoneNumber.length < 10) {
+      setErrors((prev) => ({ ...prev, phoneNumber: "Phone number must be at least 10 digits" }));
+      toast.error("Phone number must be at least 10 digits");
+      return;
+    }
+    setErrors((prev) => ({ ...prev, phoneNumber: null }));
     setLoading(true);
     try {
       const apiUrl = import.meta.env.VITE_BACKEND_URI;
@@ -105,7 +121,7 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex justify-center items-start sm:items-center overflow-y-auto p-4 md:p-10">
       {/* Glass Backdrop */}
       <div 
         className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-md transition-opacity duration-300"
@@ -113,7 +129,7 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
       />
 
       {/* Modal Container */}
-      <div className="bg-white dark:bg-[#161432] w-full max-w-lg rounded-[32px] border border-gray-100 dark:border-white/10 shadow-2xl relative z-10 overflow-hidden animate-scale-in">
+      <div className="bg-white dark:bg-[#161432] w-full max-w-xl my-auto rounded-[32px] border border-gray-100 dark:border-white/10 shadow-2xl relative z-10 overflow-hidden animate-scale-in">
         {/* Decorative Top Glow */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
 
@@ -178,6 +194,35 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Email (Disabled) */}
+            <div className="space-y-1.5 opacity-60">
+              <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Email Address</label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><Mail size={16} /></span>
+                <input 
+                  type="email" 
+                  value={currentUser?.email || ""}
+                  disabled
+                  title={currentUser?.email || ""}
+                  className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl pl-11 pr-4 py-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            {/* Username (Disabled) */}
+            <div className="space-y-1.5 opacity-60">
+              <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Username</label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><User size={16} /></span>
+                <input 
+                  type="text" 
+                  value={currentUser?.username || ""}
+                  disabled
+                  className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl pl-11 pr-4 py-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
             {/* Full Name */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Full Name</label>
@@ -195,20 +240,6 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
               </div>
             </div>
 
-            {/* Email (Disabled) */}
-            <div className="space-y-1.5 opacity-60">
-              <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Email Address</label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><Mail size={16} /></span>
-                <input 
-                  type="email" 
-                  value={currentUser?.email || ""}
-                  disabled
-                  className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl pl-11 pr-4 py-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                />
-              </div>
-            </div>
-
             {/* Phone Number */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Phone Number</label>
@@ -220,21 +251,11 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
                   value={formData.phoneNumber}
                   onChange={handleChange}
                   placeholder="9876543210"
-                  className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            {/* Username (Disabled) */}
-            <div className="space-y-1.5 opacity-60">
-              <label className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest pl-1">Username</label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"><User size={16} /></span>
-                <input 
-                  type="text" 
-                  value={currentUser?.username || ""}
-                  disabled
-                  className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl pl-11 pr-4 py-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                  className={`w-full bg-gray-50 dark:bg-white/5 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 text-gray-900 dark:text-white transition-all ${
+                    errors.phoneNumber 
+                      ? "border border-red-500 focus:ring-red-500/20" 
+                      : "border-none focus:ring-blue-500/20"
+                  }`}
                 />
               </div>
             </div>
