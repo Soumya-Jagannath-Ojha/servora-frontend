@@ -1,7 +1,7 @@
 import React from "react";
 
-const ProjectCard = ({ project }) => (
-  <div className="glass-card p-6 md:p-8 rounded-3xl space-y-6 group bg-white/40 dark:bg-[#121124]/40 backdrop-blur-md border border-gray-100 dark:border-white/5">
+const ProjectCard = ({ project, onClick }) => (
+  <div onClick={onClick} className="glass-card p-6 md:p-8 rounded-3xl space-y-6 group bg-white/40 dark:bg-[#121124]/40 backdrop-blur-md border border-gray-100 dark:border-white/5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
     <div className="flex justify-between items-start">
       <div className={`${project.iconBg} w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center shrink-0`}>
         <span className={`material-symbols-outlined ${project.iconColor} text-2xl`}>{project.icon}</span>

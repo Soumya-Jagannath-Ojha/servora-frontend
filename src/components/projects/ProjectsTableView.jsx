@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProjectsTableView = ({ displayProjects }) => (
+const ProjectsTableView = ({ displayProjects, onSelectProject }) => (
   <div className="glass-card rounded-[32px] overflow-hidden border border-gray-100 dark:border-white/5 bg-white/40 dark:bg-[#121124]/40 backdrop-blur-md">
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse min-w-[800px]">
@@ -17,7 +17,11 @@ const ProjectsTableView = ({ displayProjects }) => (
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
           {displayProjects.map((project,index) => (
-            <tr key={project.id} className="hover:bg-gray-50/30 dark:hover:bg-white/5 transition-colors group">
+            <tr 
+              key={project.id} 
+              onClick={() => onSelectProject(project)}
+              className="hover:bg-gray-50/30 dark:hover:bg-white/5 transition-colors group cursor-pointer"
+            >
               <td className="py-5 px-6">
                 {index+1}
               </td>
@@ -65,7 +69,7 @@ const ProjectsTableView = ({ displayProjects }) => (
                   )}
                 </div>
               </td>
-              <td className="py-5 px-8 text-right">
+              <td className="py-5 px-8 text-right" onClick={(e) => e.stopPropagation()}>
                 <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                   <span className="material-symbols-outlined text-lg">more_vert</span>
                 </button>

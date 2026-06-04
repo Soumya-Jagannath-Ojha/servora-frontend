@@ -34,6 +34,22 @@ export const createProject = createAsyncThunk(
   }
 );
 
+export const updateProject = createAsyncThunk(
+  "projects/updateProject",
+  async ({ projectId, projectData }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/v1/projects/${projectId}`, projectData, {
+        withCredentials: true,
+      });
+      return response.data?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update project"
+      );
+    }
+  }
+);
+
 const initialState = {
   projects: [],
   loading: false,
@@ -81,6 +97,28 @@ const projectSlice = createSlice({
         }
       })
       .addCase(createProject.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProject.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          const updated = action.payload.project ? action.payload : { project: action.payload, role: "admin" };
+          const index = state.projects.findIndex(p => {
+            const currentId = p.project?._id || p._id;
+            const updatedId = updated.project?._id || updated._id;
+            return currentId === updatedId;
+          });
+          if (index !== -1) {
+            state.projects[index] = updated;
+          }
+        }
+      })
+      .addCase(updateProject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

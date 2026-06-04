@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createProject } from "../../store/slices/projectSlice";
+import { createProject, updateProject } from "../../store/slices/projectSlice";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { apiUrl } from "../../utils/config";
 
-const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
+const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess, projectToEdit = null }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
 
@@ -70,10 +70,14 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
           if (res.data?.success) {
             const list = res.data.data.members || [];
             setMembers(list);
-            if (currentUser) {
-              setProjectManager(currentUser._id);
-            } else if (list.length > 0) {
-              setProjectManager(list[0]._id);
+            
+            // Set manager fallback if not editing
+            if (!projectToEdit) {
+              if (currentUser) {
+                setProjectManager(currentUser._id);
+              } else if (list.length > 0) {
+                setProjectManager(list[0]._id);
+              }
             }
           }
         } catch (err) {
@@ -82,22 +86,56 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
       };
       fetchMembers();
       
-      // Reset all defaults
-      setProjectName("");
-      setProjectDesc("");
-      setTemplate("none");
-      setProjectType("");
-      setStatus("Active");
-      setClientName("");
-      setClientEmail("");
-      setClientPhone("");
-      setBudget("");
-      setProgress(0);
-      setDepartments("");
-      setProjectUpdates("");
-      setVendorsList([]);
-      setAssignedMembersList([]);
-      setPenaltiesList([]);
+      if (projectToEdit) {
+        // Extract raw project object if wrapped
+        const p = projectToEdit.rawProject || projectToEdit;
+        setProjectName(p.name || "");
+        setProjectDesc(p.description || "");
+        setTemplate(p.template || "none");
+        setProjectType(p.projectType || "");
+        setStatus(p.status || "Active");
+        setClientName(p.client?.name || "");
+        setClientEmail(p.client?.email || "");
+        setClientPhone(p.client?.phone || "");
+        setBudget(p.budget || "");
+        setProgress(p.progress || 0);
+        setDepartments(p.departments?.join(", ") || "");
+        setProjectUpdates(p.projectUpdates || "");
+        setVendorsList(p.vendors || []);
+        
+        // Normalize assigned members list to ensure staging name displays correctly
+        const membersMapped = p.assignedMembers ? p.assignedMembers.map(m => ({
+          member: m.member?._id || m.member,
+          role: m.role || "Developer",
+          fullName: m.fullName || (m.member?.fullName || m.member?.username) || "Workspace Member"
+        })) : [];
+        setAssignedMembersList(membersMapped);
+        
+        setPenaltiesList(p.penalties || []);
+        setProjectManager(p.projectManager || "");
+        setStartDate(p.startDate ? new Date(p.startDate).toISOString().split('T')[0] : "");
+        setEndDate(p.endDate ? new Date(p.endDate).toISOString().split('T')[0] : "");
+      } else {
+        // Reset all defaults
+        setProjectName("");
+        setProjectDesc("");
+        setTemplate("none");
+        setProjectType("");
+        setStatus("Active");
+        setClientName("");
+        setClientEmail("");
+        setClientPhone("");
+        setBudget("");
+        setProgress(0);
+        setDepartments("");
+        setProjectUpdates("");
+        setVendorsList([]);
+        setAssignedMembersList([]);
+        setPenaltiesList([]);
+        setStartDate("");
+        setEndDate("");
+      }
+      
       setNewMemberId("");
       setNewMemberRole("");
       setNewVendorName("");
@@ -114,11 +152,8 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
       
       setFormErrors({});
       setCurrentStep(1);
-      
-      setStartDate("");
-      setEndDate("");
     }
-  }, [isOpen, currentUser]);
+  }, [isOpen, currentUser, projectToEdit]);
 
   const addAssignedMember = () => {
     if (!newMemberId) {
@@ -264,18 +299,27 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
         })) : undefined
       };
 
-      const resultAction = await dispatch(createProject(payload));
+      let resultAction;
+      if (projectToEdit) {
+        const rawProj = projectToEdit.rawProject || projectToEdit;
+        resultAction = await dispatch(updateProject({ projectId: rawProj._id, projectData: payload }));
+      } else {
+        resultAction = await dispatch(createProject(payload));
+      }
       
-      if (createProject.fulfilled.match(resultAction)) {
-        toast.success("Project created successfully!");
+      if (
+        (projectToEdit && updateProject.fulfilled.match(resultAction)) ||
+        (!projectToEdit && createProject.fulfilled.match(resultAction))
+      ) {
+        toast.success(projectToEdit ? "Project updated successfully!" : "Project created successfully!");
         onSubmitSuccess();
         onClose();
       } else {
-        toast.error(resultAction.payload || "Failed to create project");
+        toast.error(resultAction.payload || "Failed to submit project data");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to create project");
+      toast.error("Failed to submit project data");
     } finally {
       setCreating(false);
     }
@@ -284,14 +328,22 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex justify-center items-center p-4 bg-black/60 backdrop-blur-sm overflow-hidden font-sans">
-      <div className="w-full max-w-2xl bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl animate-scale-in relative my-auto flex flex-col overflow-y-auto" style={{maxHeight: 'min(90vh, 800px)', overscrollBehavior: 'contain'}}>
+    <div className="fixed inset-0 z-[100] flex justify-center items-center p-4 bg-black/60 backdrop-blur-sm font-sans">
+      {/* Backdrop click handler */}
+      <div className="absolute inset-0" onClick={onClose} />
+
+      {/* Modal Container */}
+      <div className="w-full max-w-2xl max-h-[90vh] bg-white dark:bg-[#121124] rounded-[32px] border border-gray-100 dark:border-white/5 shadow-2xl animate-scale-in relative z-10 my-auto flex flex-col overflow-hidden">
         
         {/* Sticky Modal Header */}
         <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-4 px-8 pt-8 shrink-0">
           <div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-white">Create New Project</h3>
-            <p className="text-xs text-gray-400 font-bold mt-0.5">Fill in workspace project parameters</p>
+            <h3 className="text-xl font-black text-gray-900 dark:text-white">
+              {projectToEdit ? "Edit Project Details" : "Create New Project"}
+            </h3>
+            <p className="text-xs text-gray-400 font-bold mt-0.5">
+              {projectToEdit ? "Modify workspace project parameters" : "Fill in workspace project parameters"}
+            </p>
           </div>
           <button 
             onClick={onClose}
@@ -351,8 +403,8 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
           })}
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleCreateProject} className="px-8 pb-8">
+        <form onSubmit={handleCreateProject} className="flex-1 flex flex-col overflow-hidden">
+          <div data-lenis-prevent className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-8 space-y-6">
             {/* Tab 1: General Info */}
             {currentStep === 1 && (
             <div className="space-y-4 animate-fade-in-up">
@@ -833,14 +885,16 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
                     ))}
                   </div>
                 )}
-              </div>
             </div>
-          )}
+          </div>
+        )}
+      </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5 shrink-0 mt-4">
+          <div className="flex gap-4 p-8 border-t border-gray-100 dark:border-white/5 shrink-0">
             {currentStep > 1 ? (
               <button 
+                key="back-step-btn"
                 type="button"
                 onClick={() => setCurrentStep(prev => prev - 1)}
                 className="flex-1 py-3.5 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-black rounded-2xl transition-all active:scale-95 text-xs uppercase flex items-center justify-center gap-1.5"
@@ -850,6 +904,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
               </button>
             ) : (
               <button 
+                key="cancel-modal-btn"
                 type="button"
                 onClick={onClose}
                 className="flex-1 py-3.5 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-black rounded-2xl transition-all active:scale-95 text-xs uppercase"
@@ -860,6 +915,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
 
             {currentStep < 4 ? (
               <button 
+                key="next-step-btn"
                 type="button"
                 onClick={() => {
                   if (validateStep(currentStep)) {
@@ -875,6 +931,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
               </button>
             ) : (
               <button 
+                key="submit-form-btn"
                 type="submit"
                 disabled={creating}
                 className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-75 text-white font-black rounded-2xl transition-all active:scale-95 text-xs uppercase shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
@@ -882,10 +939,10 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmitSuccess }) => {
                 {creating ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    <span>Creating...</span>
+                    <span>Saving...</span>
                   </>
                 ) : (
-                  <span>Create Project</span>
+                  <span>{projectToEdit ? "Save Changes" : "Create Project"}</span>
                 )}
               </button>
             )}

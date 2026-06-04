@@ -4,6 +4,7 @@ import { fetchProjects } from "../../store/slices/projectSlice";
 import ProjectCard from "./ProjectCard";
 import ProjectsTableView from "./ProjectsTableView";
 import CreateProjectModal from "./CreateProjectModal";
+import ProjectDetailsModal from "./ProjectDetailsModal";
 
 const avatarUrls = [
   "https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=880&auto=format&fit=crop",
@@ -17,6 +18,8 @@ const MyProjectsView = () => {
   
   const [viewType, setViewType] = useState("grid"); // "grid" or "list"
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectToEdit, setProjectToEdit] = useState(null);
 
   useEffect(() => {
     dispatch(fetchProjects());
@@ -54,6 +57,7 @@ const MyProjectsView = () => {
       isLarge: false,
       membersCount: count,
       dueDate: p.endDate ? new Date(p.endDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Oct 24",
+      rawProject: p,
     };
   }) : [];
 
@@ -113,7 +117,10 @@ const MyProjectsView = () => {
             </button>
           </div>
           <button 
-            onClick={() => setCreateModalOpen(true)}
+            onClick={() => {
+              setProjectToEdit(null);
+              setCreateModalOpen(true);
+            }}
             className="h-11 px-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black  rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-blue-500/20 shrink-0"
           >
             <span className="material-symbols-outlined text-base">add</span>
@@ -146,11 +153,18 @@ const MyProjectsView = () => {
 
       {displayProjects.length > 0 ? (
         viewType === "list" ? (
-          <ProjectsTableView displayProjects={displayProjects} />
+          <ProjectsTableView 
+            displayProjects={displayProjects} 
+            onSelectProject={(project) => setSelectedProject(project)} 
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-fade-in-up">
             {displayProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard 
+                key={project.id} 
+                project={project} 
+                onClick={() => setSelectedProject(project)} 
+              />
             ))}
           </div>
         )
@@ -165,8 +179,22 @@ const MyProjectsView = () => {
       {/* Modular Project Creation Modal */}
       <CreateProjectModal 
         isOpen={createModalOpen} 
-        onClose={() => setCreateModalOpen(false)} 
+        onClose={() => {
+          setCreateModalOpen(false);
+          setProjectToEdit(null);
+        }} 
         onSubmitSuccess={() => dispatch(fetchProjects())} 
+        projectToEdit={projectToEdit}
+      />
+
+      {/* Project Details Modal */}
+      <ProjectDetailsModal 
+        project={selectedProject} 
+        onClose={() => setSelectedProject(null)} 
+        onEdit={(proj) => {
+          setProjectToEdit(proj);
+          setCreateModalOpen(true);
+        }}
       />
     </div>
   );
