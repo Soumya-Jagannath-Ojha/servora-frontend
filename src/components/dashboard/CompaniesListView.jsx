@@ -2,6 +2,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { apiUrl } from "../../utils/config";
 
 const CompaniesListView = () => {
   const [companies, setCompanies] = React.useState([]);
@@ -126,8 +127,6 @@ const CompaniesListView = () => {
       toast.error(err.response?.data?.message || "Failed to upload logo", { id: "logo-upload" });
     }
   };
-
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   const fetchCompanies = async () => {
     setLoading(true);

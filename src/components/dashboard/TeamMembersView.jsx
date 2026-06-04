@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Loader2, Plus, Mail, Shield, UserX, UserCheck, RefreshCw, X, ChevronDown } from "lucide-react";
 import { formatDate } from "../../utils/date";
+import { apiUrl } from "../../utils/config";
  
 const TeamMembersView = () => {
   const [activeTab, setActiveTab] = useState("members"); // members | invites
@@ -33,8 +34,6 @@ const TeamMembersView = () => {
   const [roleName, setRoleName] = useState("");
   const [roleDesc, setRoleDesc] = useState("");
   const [roleLoading, setRoleLoading] = useState(false);
-
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   const fetchMembers = async () => {
     setLoading(true);

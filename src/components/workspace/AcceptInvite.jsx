@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Loader2, CheckCircle2, AlertTriangle, UserPlus, ArrowRight } from "lucide-react";
+import { apiUrl } from "../../utils/config";
 
 const AcceptInvite = () => {
   const { token } = useParams();
@@ -14,8 +15,6 @@ const AcceptInvite = () => {
   const [requiresReg, setRequiresReg] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
-
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   useEffect(() => {
     const verifyAndAcceptInvite = async () => {

@@ -4,11 +4,11 @@ import { setUser } from "../../store/slices/authSlice";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Loader2, Globe, Clock, Calendar, DollarSign, ShieldAlert, Check } from "lucide-react";
+import { apiUrl } from "../../utils/config";
 
 const SettingsView = () => {
   const currentUser = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   const [settings, setSettings] = useState({
     timezone: "",

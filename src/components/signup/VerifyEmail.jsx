@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdMarkEmailUnread } from "react-icons/md";
+import { apiUrl } from "../../utils/config";
 
 const VerifyEmail = () => {
   const { verificationToken } = useParams();
@@ -17,7 +18,7 @@ const VerifyEmail = () => {
 
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/verify-email/${verificationToken}`
+        `${apiUrl}/api/v1/auth/verify-email/${verificationToken}`
       );
 
       // ✅ Properly read backend response

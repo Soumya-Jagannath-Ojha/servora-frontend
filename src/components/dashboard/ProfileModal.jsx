@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/authSlice";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { apiUrl } from "../../utils/config";
 import { X, User, Mail, Phone, Globe, MapPin, Loader2, Building, Shield, Camera } from "lucide-react";
 
 const ProfileModal = ({ isOpen, onClose, currentUser }) => {
@@ -66,7 +67,6 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
 
     setUploadingAvatar(true);
     try {
-      const apiUrl = import.meta.env.VITE_BACKEND_URI;
       const res = await axios.post(
         `${apiUrl}/api/v1/auth/update-avatar`,
         uploadData,
@@ -100,7 +100,6 @@ const ProfileModal = ({ isOpen, onClose, currentUser }) => {
     setErrors((prev) => ({ ...prev, phoneNumber: null }));
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_BACKEND_URI;
       const res = await axios.post(
         `${apiUrl}/api/v1/auth/update-profile`,
         formData,

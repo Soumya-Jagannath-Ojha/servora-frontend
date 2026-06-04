@@ -5,6 +5,7 @@ import { setUser } from "../../store/slices/authSlice";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { apiUrl } from "../../utils/config";
 
 
 const Login = () => {
@@ -30,7 +31,6 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_BACKEND_URI;
       const res = await axios.post(`${apiUrl}/api/v1/auth/login`, {
         email: formdata.email,
         password: formdata.password,
@@ -39,7 +39,6 @@ const Login = () => {
       });
 
       if (res.data.success === true) {
-        localStorage.setItem("isAuthenticated", "true");
         toast.success(res.data.message || "Logged in successfully!");
         
         try {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { apiUrl } from "../../utils/config";
 
 const CheckEmail = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const CheckEmail = () => {
     setResending(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/resend-email-verification`,
+        `${apiUrl}/api/v1/auth/resend-email-verification`,
         { email }
       );
       toast.success(res.data?.message || "Verification email resent successfully!");

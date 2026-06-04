@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, ChevronRight, ChevronLeft, Briefcase, User, GraduationCap, Heart, CheckCircle2, ChevronDown } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { apiUrl } from '../../utils/config';
 
 const countries = {
   "India": ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"],
@@ -145,7 +146,6 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_BACKEND_URI;
       const res = await axios.post(
         `${apiUrl}/api/v1/auth/register`,
         formdata

@@ -4,11 +4,34 @@ import { Toaster } from 'react-hot-toast'
 import { useTheme } from '../../context/ThemeContext'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
+import { useDispatch } from 'react-redux'
+import { setUser, clearAuth } from '../../store/slices/authSlice'
+import axios from 'axios'
+import { apiUrl } from '../../utils/config'
 
 function Root() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const checkUserSetupStatus = async () => {
+      try {
+        const res = await axios.post(`${apiUrl}/api/v1/auth/current-user`, {}, { withCredentials: true });
+        const user = res.data?.data?.user;
+        if (user) {
+          dispatch(setUser(user));
+        } else {
+          dispatch(clearAuth());
+        }
+      } catch (err) {
+        console.error(err);
+        dispatch(clearAuth());
+      }
+    };
+    checkUserSetupStatus();
+  }, [dispatch]);
 
   useEffect(() => {
     const lenis = new Lenis({

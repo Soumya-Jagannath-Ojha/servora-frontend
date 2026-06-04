@@ -17,11 +17,12 @@ import {
   Check 
 } from "lucide-react";
 
+import { apiUrl } from "../../utils/config";
+
 const SetupWorkspace = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   useEffect(() => {
     const checkUserSetupStatus = async () => {

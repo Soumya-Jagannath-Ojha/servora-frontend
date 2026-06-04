@@ -2,6 +2,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { apiUrl } from "../../utils/config";
 
 const RolesPermissionsView = () => {
   const [subTab, setSubTab] = React.useState("roles"); // "roles" or "users"
@@ -16,8 +17,6 @@ const RolesPermissionsView = () => {
   const [roleName, setRoleName] = React.useState("");
   const [roleDesc, setRoleDesc] = React.useState("");
   const [selectedPermissions, setSelectedPermissions] = React.useState([]); // list of permission IDs
-
-  const apiUrl = import.meta.env.VITE_BACKEND_URI;
 
   const fetchData = async () => {
     setLoading(true);
